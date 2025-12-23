@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "cartegories_mobile",
+    "slug": "cartegories_mobile",
+    "version": "1.0.0",
+    "orientation": "landscape",
+    "icon": "./assets/images/icons/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/icons/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.cartegories-mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icons/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/images/icons/favicon.png"
+    },
+    "plugins": [
+      "expo-font"
+    ]
+  }
+}
