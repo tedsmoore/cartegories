@@ -23,7 +23,7 @@ Install the dependencies:
 npm install
 ```
 
-Run the devlelopment mobile app:
+Run the development mobile app:
 ```bash
 npx expo run
 ```
