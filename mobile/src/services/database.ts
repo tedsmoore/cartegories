@@ -3,6 +3,7 @@ import { games, GameRecord } from '../db/schema';
 import { sql } from 'drizzle-orm';
 import { migrate } from 'drizzle-orm/expo-sqlite/migrator';
 import migrations from '../../drizzle/migrations';
+import { seedDecks } from '../db/seed';
 
 export { games, GameRecord };
 
@@ -10,8 +11,9 @@ export const initDatabase = async () => {
   try {
     await migrate(db, migrations);
     console.log('Migrations applied successfully');
+    await seedDecks(db);
   } catch (error) {
-    console.error('Migration error:', error);
+    console.error('Database init error:', error);
   }
 };
 

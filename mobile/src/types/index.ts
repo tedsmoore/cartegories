@@ -10,7 +10,7 @@ export type Deck = {
   cards: Card[];
   priority?: number;
   image?: string;
-  forSale?: boolean;
+  isFree?: boolean;
 };
 
 export type GameState = {
