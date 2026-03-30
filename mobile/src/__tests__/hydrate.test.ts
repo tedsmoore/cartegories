@@ -22,34 +22,30 @@ const makeCard = (overrides: Partial<CardRecord> = {}): CardRecord => ({
 });
 
 describe('hydrateDecks', () => {
-  it('flattens card items into individual Card objects', () => {
+  it('creates one Card per category row (not flattened)', () => {
     const decks = hydrateDecks([makeDeck()], [makeCard()]);
 
     expect(decks).toHaveLength(1);
-    expect(decks[0].cards).toHaveLength(3);
-    expect(decks[0].cards[0].prompt).toBe('Sand');
-    expect(decks[0].cards[1].prompt).toBe('Waves');
-    expect(decks[0].cards[2].prompt).toBe('Sunscreen');
+    expect(decks[0].cards).toHaveLength(1);
+    expect(decks[0].cards[0].category).toBe('Beach Things');
+    expect(decks[0].cards[0].items).toEqual(['Sand', 'Waves', 'Sunscreen']);
+    expect(decks[0].cards[0].fact).toBe('Fun fact');
   });
 
-  it('generates unique card IDs using key * 100 + index', () => {
+  it('preserves card ID from the DB key', () => {
     const card = makeCard({ id: 14000 });
     const decks = hydrateDecks([makeDeck()], [card]);
 
-    expect(decks[0].cards[0].id).toBe(1400000);
-    expect(decks[0].cards[1].id).toBe(1400001);
-    expect(decks[0].cards[2].id).toBe(1400002);
+    expect(decks[0].cards[0].id).toBe(14000);
   });
 
-  it('assigns correct deckId to flattened cards', () => {
+  it('assigns correct deckId to cards', () => {
     const decks = hydrateDecks(
       [makeDeck({ id: 'food-drink', name: 'Food & Drink' })],
       [makeCard({ deckId: 'food-drink' })],
     );
 
-    for (const card of decks[0].cards) {
-      expect(card.deckId).toBe('food-drink');
-    }
+    expect(decks[0].cards[0].deckId).toBe('food-drink');
   });
 
   it('groups cards by deckId across multiple decks', () => {
@@ -58,15 +54,15 @@ describe('hydrateDecks', () => {
       makeDeck({ id: 'music', name: 'Music', isFree: true }),
     ];
     const cardRows = [
-      makeCard({ id: 100, deckId: 'general', items: JSON.stringify(['A', 'B']) }),
-      makeCard({ id: 200, deckId: 'music', items: JSON.stringify(['X', 'Y', 'Z']) }),
-      makeCard({ id: 201, deckId: 'music', items: JSON.stringify(['P', 'Q']) }),
+      makeCard({ id: 100, deckId: 'general' }),
+      makeCard({ id: 200, deckId: 'music' }),
+      makeCard({ id: 201, deckId: 'music' }),
     ];
 
     const decks = hydrateDecks(deckRows, cardRows);
 
-    expect(decks[0].cards).toHaveLength(2);
-    expect(decks[1].cards).toHaveLength(5);
+    expect(decks[0].cards).toHaveLength(1);
+    expect(decks[1].cards).toHaveLength(2);
   });
 
   it('returns empty cards for a deck with no card rows', () => {
@@ -99,14 +95,21 @@ describe('hydrateDecks', () => {
     expect(decks[0].image).toBeUndefined();
   });
 
-  it('produces globally unique card IDs across decks', () => {
+  it('coerces numeric items to strings', () => {
+    const card = makeCard({ items: JSON.stringify([1984, 'Normal', 42]) });
+    const decks = hydrateDecks([makeDeck()], [card]);
+
+    expect(decks[0].cards[0].items).toEqual(['1984', 'Normal', '42']);
+  });
+
+  it('produces unique card IDs across decks', () => {
     const deckRows = [
       makeDeck({ id: 'a' }),
       makeDeck({ id: 'b' }),
     ];
     const cardRows = [
-      makeCard({ id: 100, deckId: 'a', items: JSON.stringify(['x', 'y']) }),
-      makeCard({ id: 200, deckId: 'b', items: JSON.stringify(['x', 'y']) }),
+      makeCard({ id: 100, deckId: 'a' }),
+      makeCard({ id: 200, deckId: 'b' }),
     ];
 
     const decks = hydrateDecks(deckRows, cardRows);

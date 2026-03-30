@@ -44,7 +44,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   const onStart = () => {
     startNewRound();
-    navigation.navigate('Play');
+    navigation.navigate('CardSelection');
   };
 
   useEffect(() => {

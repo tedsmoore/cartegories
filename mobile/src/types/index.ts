@@ -1,6 +1,8 @@
 export type Card = {
   id: number;
-  prompt: string;
+  category: string;
+  items: string[];
+  fact: string | null;
   deckId: string;
 };
 
@@ -15,12 +17,11 @@ export type Deck = {
 
 export type GameState = {
   score: number;
-  cardIndex: number;
   timeRemaining: number;
   activeDecks: string[];
-  playableCards: number[];
+  currentCard: Card | null;
   drawnCards: number[];
   nailedItems: string[];
   missedItems: string[];
+  switchStates: boolean[];
 };
-

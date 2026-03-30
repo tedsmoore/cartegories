@@ -10,22 +10,25 @@ type GameContextValue = {
   decks: Deck[];
   loading: boolean;
   game: GameState;
-  startNewRound: () => void;
   drawCard: () => Card | null;
+  startNewRound: () => void;
   setActiveDecks: (deckIds: string[]) => void;
   setTimerSeconds: (seconds: number) => void;
+  setCurrentCard: (card: Card | null) => void;
+  updateSwitchStates: (states: boolean[]) => void;
+  endRound: (nailed: string[], missed: string[], score: number) => void;
   saveGameResult: () => Promise<void>;
 };
 
 const defaultGameState: GameState = {
   score: 0,
-  cardIndex: 0,
   timeRemaining: 60,
   activeDecks: [],
-  playableCards: [],
+  currentCard: null,
   drawnCards: [],
   nailedItems: [],
   missedItems: [],
+  switchStates: Array(10).fill(false),
 };
 
 const GameContext = createContext<GameContextValue | undefined>(undefined);
@@ -56,46 +59,41 @@ export const GameProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
     load();
   }, []);
 
+  // All cards from active decks
   const playableCards = useMemo(() => {
     const activeDeckLookup = new Set(game.activeDecks);
-    const cards = decks
+    return decks
       .filter((d) => activeDeckLookup.has(d.id))
-      .flatMap((deck) => deck.cards)
-      .map((c) => c.id);
-    return cards;
+      .flatMap((deck) => deck.cards);
   }, [decks, game.activeDecks]);
 
-  useEffect(() => {
-    setGame((current) => ({ ...current, playableCards }));
-  }, [playableCards]);
+  const drawCard = (): Card | null => {
+    const drawnSet = new Set(game.drawnCards);
+    const available = playableCards.filter((c) => !drawnSet.has(c.id));
+    if (!available.length) return null;
+
+    const next = available[Math.floor(Math.random() * available.length)];
+    setGame((current) => ({
+      ...current,
+      currentCard: next,
+      drawnCards: [...current.drawnCards, next.id],
+      switchStates: Array(next.items.length).fill(false),
+      score: 0,
+    }));
+    return next;
+  };
 
   const startNewRound = () => {
     setGame((current) => ({
       ...current,
       score: 0,
-      cardIndex: 0,
+      currentCard: null,
       timeRemaining: current.timeRemaining > 0 ? current.timeRemaining : 60,
       drawnCards: [],
       nailedItems: [],
       missedItems: [],
+      switchStates: Array(10).fill(false),
     }));
-  };
-
-  const drawCard = (): Card | null => {
-    const available = playableCards.filter((cardId) => !game.drawnCards.includes(cardId));
-    if (!available.length) {
-      return null;
-    }
-    const nextId = available[Math.floor(Math.random() * available.length)];
-    const nextCard = decks.flatMap((d) => d.cards).find((c) => c.id === nextId) ?? null;
-
-    setGame((current) => ({
-      ...current,
-      drawnCards: [...current.drawnCards, nextId],
-      cardIndex: current.cardIndex + 1,
-    }));
-
-    return nextCard;
   };
 
   const setActiveDecks = (deckIds: string[]) => {
@@ -107,6 +105,32 @@ export const GameProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
     setGame((current) => ({ ...current, timeRemaining: seconds }));
   };
 
+  const setCurrentCard = (card: Card | null) => {
+    setGame((current) => ({
+      ...current,
+      currentCard: card,
+      switchStates: card ? Array(card.items.length).fill(false) : Array(10).fill(false),
+      score: 0,
+    }));
+  };
+
+  const updateSwitchStates = (states: boolean[]) => {
+    setGame((current) => ({
+      ...current,
+      switchStates: states,
+      score: states.filter(Boolean).length,
+    }));
+  };
+
+  const endRound = (nailed: string[], missed: string[], score: number) => {
+    setGame((current) => ({
+      ...current,
+      nailedItems: nailed,
+      missedItems: missed,
+      score,
+    }));
+  };
+
   const saveGameResult = async () => {
     await saveGame(game.score, game.drawnCards.length, game.activeDecks);
   };
@@ -115,10 +139,13 @@ export const GameProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
     decks,
     loading,
     game,
-    startNewRound,
     drawCard,
+    startNewRound,
     setActiveDecks,
     setTimerSeconds,
+    setCurrentCard,
+    updateSwitchStates,
+    endRound,
     saveGameResult,
   };
 

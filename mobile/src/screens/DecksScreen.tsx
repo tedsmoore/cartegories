@@ -6,7 +6,7 @@ import { useGame } from '../state/GameContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Decks'>;
 
-const DecksScreen: React.FC<Props> = () => {
+const DecksScreen: React.FC<Props> = ({ navigation }) => {
   const { decks, game, setActiveDecks, loading } = useGame();
 
   if (loading) {
@@ -19,7 +19,7 @@ const DecksScreen: React.FC<Props> = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Choose active decks</Text>
+      <Text style={styles.header}>Your Decks</Text>
       <FlatList
         data={decks}
         keyExtractor={(item) => item.id}
@@ -47,6 +47,15 @@ const DecksScreen: React.FC<Props> = () => {
             </Pressable>
           );
         }}
+        ListFooterComponent={
+          <View style={styles.optionsSection}>
+            <Text style={styles.header}>Options</Text>
+            <Pressable style={styles.optionRow} onPress={() => navigation.navigate('Timer')}>
+              <Text style={styles.optionText}>Timer</Text>
+              <Text style={styles.optionValue}>{game.timeRemaining}s</Text>
+            </Pressable>
+          </View>
+        }
       />
     </View>
   );
@@ -80,7 +89,7 @@ const styles = StyleSheet.create({
   },
   deckRowActive: {
     borderWidth: 1,
-    borderColor: '#38bdf8',
+    borderColor: '#1eafe2',
   },
   deckName: {
     fontSize: 16,
@@ -99,13 +108,34 @@ const styles = StyleSheet.create({
   },
   pillActive: {
     backgroundColor: '#0f172a',
-    color: '#38bdf8',
+    color: '#1eafe2',
   },
   pillInactive: {
     backgroundColor: '#334155',
     color: '#e2e8f0',
   },
+  optionsSection: {
+    marginTop: 20,
+  },
+  optionRow: {
+    backgroundColor: '#1e293b',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  optionText: {
+    fontSize: 16,
+    color: '#e2e8f0',
+    fontWeight: '700',
+  },
+  optionValue: {
+    color: '#1eafe2',
+    fontWeight: '700',
+    fontSize: 16,
+  },
 });
 
 export default DecksScreen;
-
