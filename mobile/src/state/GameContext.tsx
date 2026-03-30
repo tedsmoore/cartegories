@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { fetchCategories, fetchMetadata } from '../services/firebase';
 import { saveGame } from '../services/database';
+import { db } from '../db/db';
+import { decks as decksTable, cards as cardsTable } from '../db/schema';
+import { hydrateDecks, getDefaultActiveDecks } from '../utils/hydrate';
 import { Deck, Card, GameState } from '../types';
 
 type GameContextValue = {
@@ -19,7 +21,7 @@ const defaultGameState: GameState = {
   score: 0,
   cardIndex: 0,
   timeRemaining: 60,
-  activeDecks: ['general', 'food-drink', 'science-nature', 'sports-leisure', 'history-geography', 'tv-movies', 'music'],
+  activeDecks: [],
   playableCards: [],
   drawnCards: [],
   nailedItems: [],
@@ -36,27 +38,17 @@ export const GameProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      const [remoteCategories, remoteMetadata] = await Promise.all([fetchCategories(), fetchMetadata()]);
 
-      const hydratedDecks: Deck[] = remoteCategories.map((cat, index) => ({
-        id: cat.id,
-        name: cat.name,
-        priority: cat.priority ?? index,
-        cards: cat.items.map((prompt, idx) => ({
-          id: index * 1000 + idx,
-          prompt,
-          deckId: cat.id,
-        })),
-        forSale: remoteMetadata.decksForSale.includes(cat.id),
-        image: cat.image,
-      }));
+      const deckRows = await db.select().from(decksTable).orderBy(decksTable.priority);
+      const cardRows = await db.select().from(cardsTable);
+      const hydratedDecks = hydrateDecks(deckRows, cardRows);
 
       setDecks(hydratedDecks);
 
       const storedActive = await AsyncStorage.getItem('activeDecks');
-      if (storedActive) {
-        setGame((current) => ({ ...current, activeDecks: JSON.parse(storedActive) }));
-      }
+      const parsed = storedActive ? JSON.parse(storedActive) : null;
+      const activeDecks = getDefaultActiveDecks(hydratedDecks, parsed);
+      setGame((current) => ({ ...current, activeDecks }));
 
       setLoading(false);
     };

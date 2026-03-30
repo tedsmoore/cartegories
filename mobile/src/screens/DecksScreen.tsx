@@ -36,7 +36,9 @@ const DecksScreen: React.FC<Props> = () => {
               }}
             >
               <View>
-                <Text style={styles.deckName}>{item.name}</Text>
+                <Text style={styles.deckName}>
+                  {!item.isFree && '\uD83D\uDD12 '}{item.name}
+                </Text>
                 <Text style={styles.deckMeta}>{item.cards.length} cards</Text>
               </View>
               <Text style={[styles.pill, active ? styles.pillActive : styles.pillInactive]}>
