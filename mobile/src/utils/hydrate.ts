@@ -11,20 +11,19 @@ export function hydrateDecks(deckRows: DeckRecord[], cardRows: CardRecord[]): De
 
   return deckRows.map((deck) => {
     const deckCards = cardsByDeck.get(deck.id) ?? [];
-    const flatCards: Card[] = deckCards.flatMap((card) => {
-      const items: unknown[] = JSON.parse(card.items);
-      return items.map((rawPrompt, idx) => ({
-        id: card.id * 100 + idx,
-        prompt: String(rawPrompt),
-        deckId: deck.id,
-      }));
-    });
+    const cards: Card[] = deckCards.map((card) => ({
+      id: card.id,
+      category: card.category,
+      items: (JSON.parse(card.items) as unknown[]).map(String),
+      fact: card.fact,
+      deckId: deck.id,
+    }));
 
     return {
       id: deck.id,
       name: deck.name,
       priority: deck.priority,
-      cards: flatCards,
+      cards,
       image: deck.image ?? undefined,
       isFree: deck.isFree,
     };

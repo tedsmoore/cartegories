@@ -6,7 +6,7 @@ import { useGame } from '../state/GameContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Timer'>;
 
-const PRESETS = [45, 60, 90, 120];
+const PRESETS = [60, 75, 99];
 
 const TimerScreen: React.FC<Props> = ({ navigation }) => {
   const { game, setTimerSeconds } = useGame();
