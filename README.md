@@ -1,6 +1,6 @@
 # cartegories
 
-A category game for the car!
+A category game for the car! Or the bar! Or the couch!
 
 ## Getting started
 
