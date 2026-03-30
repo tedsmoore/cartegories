@@ -1,58 +1,139 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, StyleSheet, Switch, Pressable, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGame } from '../state/GameContext';
-import { Card } from '../types';
-import {getGames} from "../services/database";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Play'>;
 
 const PlayScreen: React.FC<Props> = ({ navigation }) => {
-  const { drawCard, game } = useGame();
-  const [currentCard, setCurrentCard] = useState<Card | null>(null);
-  const [gameCount, setGameCount] = useState<number>(0);
+  const { game, updateSwitchStates, endRound } = useGame();
+  const [paused, setPaused] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(game.timeRemaining);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const gameEndedRef = useRef(false);
 
+  const card = game.currentCard;
+  const items = card?.items ?? [];
+  const switches = game.switchStates;
+  const score = switches.filter(Boolean).length;
+
+  const finishGame = () => {
+    if (gameEndedRef.current) return;
+    gameEndedRef.current = true;
+    if (timerRef.current) clearInterval(timerRef.current);
+
+    const nailed = items.filter((_, i) => switches[i]);
+    const missed = items.filter((_, i) => !switches[i]);
+    endRound(nailed, missed, score);
+    navigation.replace('GameOver');
+  };
+
+  // Start timer on mount
   useEffect(() => {
-    const next = drawCard();
-    setCurrentCard(next);
+    timerRef.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          finishGame();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
-    const fetchGameCount = async () => {
-      const allGames = await getGames();
-      setGameCount(allGames.length);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
     };
-    fetchGameCount();
   }, []);
 
-  const onResult = (nailed: boolean) => {
-    if (nailed) {
-      // TODO: mirror iOS scoring (include timer hit/miss, nailedItems store).
+  // Pause/resume
+  useEffect(() => {
+    if (paused) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      timerRef.current = null;
+    } else if (!gameEndedRef.current) {
+      timerRef.current = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            finishGame();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
     }
-    const next = drawCard();
-    if (!next) {
-      navigation.navigate('GameOver');
-      return;
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [paused]);
+
+  // Perfect score — all items toggled ON
+  useEffect(() => {
+    if (score === items.length && items.length > 0 && !gameEndedRef.current) {
+      finishGame();
     }
-    setCurrentCard(next);
+  }, [score]);
+
+  const toggleSwitch = (index: number) => {
+    if (paused || gameEndedRef.current) return;
+    const next = [...switches];
+    next[index] = !next[index];
+    updateSwitchStates(next);
   };
-  
+
+  if (!card) {
+    navigation.goBack();
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.timer}>Time: {game.timeRemaining}s</Text>
-      <View style={styles.card}>
-        <Text>THERE ARE {gameCount} games</Text>
-        <Text style={styles.cardLabel}>Card #{game.cardIndex}</Text>
-        <Text style={styles.prompt}>{currentCard?.prompt ?? 'No more cards'}</Text>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+      <View style={styles.header}>
+        <Text style={styles.categoryName} numberOfLines={1}>{card.category}</Text>
       </View>
-      <View style={styles.row}>
-        <Pressable style={[styles.actionButton, styles.actionMiss]} onPress={() => onResult(false)}>
-          <Text style={styles.actionText}>Missed</Text>
-        </Pressable>
-        <Pressable style={[styles.actionButton, styles.actionHit]} onPress={() => onResult(true)}>
-          <Text style={styles.actionText}>Nailed it</Text>
-        </Pressable>
+
+      <View style={styles.timerRow}>
+        <Text style={styles.timer}>:{timeLeft < 10 ? `0${timeLeft}` : timeLeft}</Text>
+        <Text style={styles.scoreLabel}>{score}/{items.length}</Text>
       </View>
-    </View>
+
+      <ScrollView style={styles.itemList} contentContainerStyle={styles.itemListContent}>
+        {items.map((item, index) => (
+          <Pressable
+            key={index}
+            style={styles.itemRow}
+            onPress={() => toggleSwitch(index)}
+            disabled={paused}
+          >
+            <Text style={[
+              styles.itemText,
+              switches[index] && styles.itemTextNailed,
+            ]}>
+              {item}
+            </Text>
+            <Switch
+              value={switches[index]}
+              onValueChange={() => toggleSwitch(index)}
+              disabled={paused}
+              trackColor={{ false: '#334155', true: '#22c55e' }}
+              thumbColor={switches[index] ? '#fff' : '#94a3b8'}
+            />
+          </Pressable>
+        ))}
+      </ScrollView>
+
+      <View style={styles.controls}>
+        <Pressable style={styles.controlButton} onPress={() => setPaused(!paused)}>
+          <Text style={styles.controlText}>{paused ? 'Resume' : 'Pause'}</Text>
+        </Pressable>
+        {paused && (
+          <Pressable style={[styles.controlButton, styles.exitButton]} onPress={() => navigation.popToTop()}>
+            <Text style={styles.controlText}>Exit</Text>
+          </Pressable>
+        )}
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -60,53 +141,83 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0f172a',
-    padding: 16,
+  },
+  header: {
+    backgroundColor: '#1eafe2',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  categoryName: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#fff',
+    textAlign: 'center',
+    fontFamily: 'NanumBrush',
+  },
+  timerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
   },
   timer: {
-    color: '#e2e8f0',
-    fontWeight: '700',
-    fontSize: 18,
-    textAlign: 'center',
-    marginTop: 12,
-  },
-  card: {
-    backgroundColor: '#1e293b',
-    borderRadius: 16,
-    padding: 24,
-    marginVertical: 32,
-  },
-  cardLabel: {
-    color: '#cbd5e1',
-    marginBottom: 8,
-  },
-  prompt: {
-    fontSize: 24,
-    color: '#e2e8f0',
+    fontSize: 36,
     fontWeight: '800',
+    color: '#e2e8f0',
+    fontFamily: 'Witless',
   },
-  row: {
-    flexDirection: 'row',
-    gap: 12,
-    justifyContent: 'center',
+  scoreLabel: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#38bdf8',
   },
-  actionButton: {
+  itemList: {
     flex: 1,
-    paddingVertical: 16,
-    borderRadius: 12,
+    paddingHorizontal: 16,
+  },
+  itemListContent: {
+    gap: 2,
+  },
+  itemRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: '#1e293b',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
   },
-  actionHit: {
-    backgroundColor: '#10b981',
+  itemText: {
+    fontSize: 17,
+    color: '#e2e8f0',
+    flex: 1,
+    marginRight: 12,
   },
-  actionMiss: {
+  itemTextNailed: {
+    color: '#22c55e',
+    fontWeight: '700',
+  },
+  controls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 16,
+    padding: 16,
+  },
+  controlButton: {
+    backgroundColor: '#334155',
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+  },
+  exitButton: {
     backgroundColor: '#ef4444',
   },
-  actionText: {
-    color: '#0f172a',
+  controlText: {
+    color: '#e2e8f0',
     fontWeight: '800',
     fontSize: 16,
   },
 });
 
 export default PlayScreen;
-
