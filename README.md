@@ -16,14 +16,18 @@ Run the development server:
 uv run fastapi dev app.py
 ```
 
-## Frontend
+### Frontend
 
-Install the dependencies:
+Install [fnm](https://github.com/Schniz/fnm), then:
+
 ```bash
-npm install
+fnm install        # installs the Node version from .nvmrc
+corepack enable    # enables pnpm via corepack
+pnpm install       # install dependencies
 ```
 
 Run the development mobile app:
 ```bash
-npx expo run
+cd mobile
+pnpm start
 ```
