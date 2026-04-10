@@ -5,11 +5,13 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGame } from '../state/GameContext';
 import { useCountdown } from '../hooks/useCountdown';
+import { useSound } from '../hooks/useSound';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Play'>;
 
 const PlayScreen: React.FC<Props> = ({ navigation }) => {
   const { game, updateSwitchStates, endRound } = useGame();
+  const { playNailed, playMissed } = useSound();
   const [paused, setPaused] = useState(false);
   const gameEndedRef = useRef(false);
 
@@ -47,6 +49,11 @@ const PlayScreen: React.FC<Props> = ({ navigation }) => {
     const next = [...switches];
     next[index] = !next[index];
     updateSwitchStates(next);
+    if (next[index]) {
+      playNailed();
+    } else {
+      playMissed();
+    }
   };
 
   if (!card) {

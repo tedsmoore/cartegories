@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Switch, Pressable } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
+import { useSoundContext } from '../state/SoundContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
 const SettingsScreen: React.FC<Props> = ({ navigation }) => {
-  const [soundFx, setSoundFx] = useState(true);
+  const { soundEnabled, setSoundEnabled } = useSoundContext();
   const [timer, setTimer] = useState(60);
 
   return (
@@ -17,7 +18,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.title}>Sound Effects</Text>
           <Text style={styles.subtitle}>Match iOS setting stored in UserDefaults.</Text>
         </View>
-        <Switch value={soundFx} onValueChange={setSoundFx} />
+        <Switch value={soundEnabled} onValueChange={setSoundEnabled} />
       </View>
 
       <View style={styles.row}>

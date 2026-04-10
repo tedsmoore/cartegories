@@ -1,8 +1,23 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Pressable, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Pressable, ActivityIndicator, Image, ImageSourcePropType } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGame } from '../state/GameContext';
+
+const DECK_IMAGES: Record<string, ImageSourcePropType> = {
+  'Food & Drink': require('../../assets/images/blobs-food-and-drink@2x.png'),
+  'General': require('../../assets/images/blobs-general@2x.png'),
+  'Harry Potter': require('../../assets/images/blobs-harry-potter@2x.png'),
+  'History & Geography': require('../../assets/images/blobs-history-and-geography@2x.png'),
+  'Music': require('../../assets/images/blobs-music@2x.png'),
+  'Sci-Fi & Fantasy': require('../../assets/images/blobs-sci-fi-and-fantasy@2x.png'),
+  'Science & Nature': require('../../assets/images/blobs-science-and-nature@2x.png'),
+  'Sports & Leisure': require('../../assets/images/blobs-sports-and-leisure@2x.png'),
+  'TV & Movies': require('../../assets/images/blobs-tv-and-movies@2x.png'),
+  'Theater': require('../../assets/images/blobs-theater@2x.png'),
+  'Video Games': require('../../assets/images/blobs-video-games@2x.png'),
+  'Wordplay': require('../../assets/images/blobs-wordplay@2x.png'),
+};
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Decks'>;
 
@@ -35,7 +50,10 @@ const DecksScreen: React.FC<Props> = ({ navigation }) => {
                 setActiveDecks(next);
               }}
             >
-              <View>
+              {DECK_IMAGES[item.name] && (
+                <Image source={DECK_IMAGES[item.name]} style={styles.deckImage} resizeMode="contain" />
+              )}
+              <View style={styles.deckInfo}>
                 <Text style={styles.deckName}>
                   {!item.isFree && '\uD83D\uDD12 '}{item.name}
                 </Text>
@@ -90,6 +108,14 @@ const styles = StyleSheet.create({
   deckRowActive: {
     borderWidth: 1,
     borderColor: '#1eafe2',
+  },
+  deckImage: {
+    width: 48,
+    height: 48,
+    marginRight: 12,
+  },
+  deckInfo: {
+    flex: 1,
   },
   deckName: {
     fontSize: 16,

@@ -23,6 +23,8 @@ export const games = sqliteTable('games', {
   score: integer('score').notNull(),
   drawnCardsCount: integer('drawn_cards_count').notNull(),
   activeDecks: text('active_decks').notNull(),
+  nailedItems: text('nailed_items').notNull().default('[]'),
+  missedItems: text('missed_items').notNull().default('[]'),
   timestamp: text('timestamp').default(sql`(CURRENT_TIMESTAMP)`),
 });
 

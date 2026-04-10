@@ -132,7 +132,7 @@ export const GameProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   };
 
   const saveGameResult = async () => {
-    await saveGame(game.score, game.drawnCards.length, game.activeDecks);
+    await saveGame(game.score, game.drawnCards.length, game.activeDecks, game.nailedItems, game.missedItems);
   };
 
   const value: GameContextValue = {

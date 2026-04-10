@@ -4,6 +4,7 @@ import { sql } from 'drizzle-orm';
 import { migrate } from 'drizzle-orm/expo-sqlite/migrator';
 import migrations from '../../drizzle/migrations';
 import { seedDecks } from '../db/seed';
+import { buildGameRow } from '../utils/buildGameRow';
 
 export { games, GameRecord };
 
@@ -17,12 +18,14 @@ export const initDatabase = async () => {
   }
 };
 
-export const saveGame = async (score: number, drawnCardsCount: number, activeDecks: string[]) => {
-  await db.insert(games).values({
-    score,
-    drawnCardsCount,
-    activeDecks: JSON.stringify(activeDecks),
-  });
+export const saveGame = async (
+  score: number,
+  drawnCardsCount: number,
+  activeDecks: string[],
+  nailedItems: string[],
+  missedItems: string[],
+) => {
+  await db.insert(games).values(buildGameRow(score, drawnCardsCount, activeDecks, nailedItems, missedItems));
 };
 
 export const getGames = async (): Promise<GameRecord[]> => {

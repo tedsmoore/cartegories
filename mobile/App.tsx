@@ -3,6 +3,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import RootNavigator from './src/navigation/RootNavigator';
 import { GameProvider } from './src/state/GameContext';
+import { SoundProvider } from './src/state/SoundContext';
 import { ActivityIndicator, View } from 'react-native';
 import { SQLiteProvider } from 'expo-sqlite';
 import { DB_NAME } from './src/db/db';
@@ -31,9 +32,11 @@ export default function App() {
         </View>
       }>
         <SQLiteProvider databaseName={DB_NAME} onInit={initDatabase} useSuspense>
-          <GameProvider>
-            <RootNavigator />
-          </GameProvider>
+          <SoundProvider>
+            <GameProvider>
+              <RootNavigator />
+            </GameProvider>
+          </SoundProvider>
         </SQLiteProvider>
       </React.Suspense>
       <StatusBar style="light" />
