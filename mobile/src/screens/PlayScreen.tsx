@@ -1,17 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Switch, Pressable, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGame } from '../state/GameContext';
+import { useCountdown } from '../hooks/useCountdown';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Play'>;
 
 const PlayScreen: React.FC<Props> = ({ navigation }) => {
   const { game, updateSwitchStates, endRound } = useGame();
   const [paused, setPaused] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(game.timeRemaining);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const gameEndedRef = useRef(false);
 
   const card = game.currentCard;
@@ -19,58 +18,26 @@ const PlayScreen: React.FC<Props> = ({ navigation }) => {
   const switches = game.switchStates;
   const score = switches.filter(Boolean).length;
 
-  const finishGame = () => {
+  const finishGame = useCallback(() => {
     if (gameEndedRef.current) return;
     gameEndedRef.current = true;
-    if (timerRef.current) clearInterval(timerRef.current);
 
     const nailed = items.filter((_, i) => switches[i]);
     const missed = items.filter((_, i) => !switches[i]);
     endRound(nailed, missed, score);
     navigation.replace('GameOver');
-  };
+  }, [items, switches, score, endRound, navigation]);
 
-  // Start timer on mount
-  useEffect(() => {
-    timerRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          finishGame();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, []);
-
-  // Pause/resume
-  useEffect(() => {
-    if (paused) {
-      if (timerRef.current) clearInterval(timerRef.current);
-      timerRef.current = null;
-    } else if (!gameEndedRef.current) {
-      timerRef.current = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            finishGame();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [paused]);
+  const { timeLeft, stop } = useCountdown({
+    initialSeconds: game.timeRemaining,
+    paused,
+    onExpire: finishGame,
+  });
 
   // Perfect score — all items toggled ON
   useEffect(() => {
     if (score === items.length && items.length > 0 && !gameEndedRef.current) {
+      stop();
       finishGame();
     }
   }, [score]);
