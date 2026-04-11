@@ -5,18 +5,18 @@ import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGame } from '../state/GameContext';
 
 const DECK_IMAGES: Record<string, ImageSourcePropType> = {
-  'Food & Drink': require('../../assets/images/blobs-food-and-drink@2x.png'),
-  'General': require('../../assets/images/blobs-general@2x.png'),
-  'Harry Potter': require('../../assets/images/blobs-harry-potter@2x.png'),
-  'History & Geography': require('../../assets/images/blobs-history-and-geography@2x.png'),
-  'Music': require('../../assets/images/blobs-music@2x.png'),
-  'Sci-Fi & Fantasy': require('../../assets/images/blobs-sci-fi-and-fantasy@2x.png'),
-  'Science & Nature': require('../../assets/images/blobs-science-and-nature@2x.png'),
-  'Sports & Leisure': require('../../assets/images/blobs-sports-and-leisure@2x.png'),
-  'TV & Movies': require('../../assets/images/blobs-tv-and-movies@2x.png'),
-  'Theater': require('../../assets/images/blobs-theater@2x.png'),
-  'Video Games': require('../../assets/images/blobs-video-games@2x.png'),
-  'Wordplay': require('../../assets/images/blobs-wordplay@2x.png'),
+  'Food & Drink': require('../../assets/images/blobs-food-and-drink.png'),
+  'General': require('../../assets/images/blobs-general.png'),
+  'Harry Potter': require('../../assets/images/blobs-harry-potter.png'),
+  'History & Geography': require('../../assets/images/blobs-history-and-geography.png'),
+  'Music': require('../../assets/images/blobs-music.png'),
+  'Sci-Fi & Fantasy': require('../../assets/images/blobs-sci-fi-and-fantasy.png'),
+  'Science & Nature': require('../../assets/images/blobs-science-and-nature.png'),
+  'Sports & Leisure': require('../../assets/images/blobs-sports-and-leisure.png'),
+  'TV & Movies': require('../../assets/images/blobs-tv-and-movies.png'),
+  'Theater': require('../../assets/images/blobs-theater.png'),
+  'Video Games': require('../../assets/images/blobs-video-games.png'),
+  'Wordplay': require('../../assets/images/blobs-wordplay.png'),
 };
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Decks'>;

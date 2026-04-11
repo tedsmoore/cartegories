@@ -8,10 +8,10 @@ import { getStarRating } from '../utils/scoreComments';
 type Props = NativeStackScreenProps<RootStackParamList, 'GameOver'>;
 
 const STAR_IMAGES = [
-  require('../../assets/images/stars-0@2x.png'),
-  require('../../assets/images/stars-1@2x.png'),
-  require('../../assets/images/stars-2@2x.png'),
-  require('../../assets/images/stars-3@2x.png'),
+  require('../../assets/images/stars-0.png'),
+  require('../../assets/images/stars-1.png'),
+  require('../../assets/images/stars-2.png'),
+  require('../../assets/images/stars-3.png'),
 ];
 
 const GameOverScreen: React.FC<Props> = ({ navigation }) => {
