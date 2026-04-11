@@ -20,12 +20,14 @@ alembic revision --autogenerate -m "description"  # Create new migration
 
 ### Mobile (run from mobile/)
 ```bash
-npm install                      # Install dependencies
-npm run start                    # Start Expo dev server
-npm run android                  # Run on Android
-npm run ios                      # Run on iOS
-npm run db:generate              # Generate Drizzle migrations
-npm run db:push                  # Apply Drizzle migrations to local SQLite
+pnpm install                     # Install dependencies
+pnpm start                       # Start Expo dev server
+pnpm android                     # Run on Android
+pnpm ios                         # Run on iOS
+pnpm test                        # Run Jest tests
+pnpm db:generate                 # Generate Drizzle migrations
+pnpm db:push                     # Apply Drizzle migrations to local SQLite
+npx expo export --platform ios   # Verify Metro bundle compiles (catch import errors)
 ```
 
 ## Architecture
@@ -43,12 +45,12 @@ npm run db:push                  # Apply Drizzle migrations to local SQLite
 - **React Navigation** stack navigator in `src/navigation/RootNavigator.tsx`
 - **GameContext** (`src/state/GameContext.tsx`) manages global game state: active decks, card drawing, scores, timer
 - **Drizzle ORM** with local SQLite (`src/db/`) for game history persistence
-- **Firebase** (`src/services/firebase.ts`) for remote deck/category data (partially wired)
-- **AsyncStorage** for persisting user preferences (active deck selection)
+- **SoundContext** (`src/state/SoundContext.tsx`) + **useSound** hook (`src/hooks/useSound.ts`) for sound FX via expo-av
+- **AsyncStorage** for persisting user preferences (active deck selection, sound toggle)
 - TypeScript with strict mode enabled
 
 ### Data Flow
-- Deck/category metadata comes from Firebase (remote) -> GameContext manages active session state -> game results stored in local SQLite
+- Deck/category data seeded from `data/decks.json` into local SQLite on first launch -> GameContext manages active session state -> game results stored in local SQLite
 - Backend PostgreSQL handles user accounts and will serve as the authoritative data store
 
 ## Conventions
@@ -57,5 +59,6 @@ npm run db:push                  # Apply Drizzle migrations to local SQLite
 - TypeScript: 2-space indent, `PascalCase` components/types, `useThing` hooks
 - Commits: short, lowercase summaries (e.g., "backend scaffolding")
 - No formatter/linter configured; keep diffs consistent with existing files
-- No test framework yet; note manual testing in PRs
+- **Jest** test suite in `mobile/src/__tests__/`; run `pnpm test` from `mobile/`
+- **Always verify `npx expo export --platform ios` succeeds** before committing mobile changes (catches Metro bundler errors like bad imports)
 - Call out schema/migration changes explicitly in PRs
