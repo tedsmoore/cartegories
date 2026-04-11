@@ -9,6 +9,9 @@
 ## Commits
 
 - Short, lowercase summaries (e.g., "backend scaffolding")
+- Think in features, not individual file changes. Squash related work into one
+  commit per logical feature before pushing (e.g., "personality and docs
+  infrastructure for claude", not 16 separate commits).
 - Call out schema/migration changes explicitly in PRs
 
 ## Testing
