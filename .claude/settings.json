@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm *)",
+      "Bash(npx *)",
+      "Bash(uv *)",
+      "Bash(alembic *)",
+      "Bash(docker-compose *)",
+      "Bash(docker *)",
+      "Bash(expo *)"
+    ]
+  }
+}

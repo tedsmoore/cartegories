@@ -44,7 +44,8 @@ build/
 *.sqlite3
 
 # Claude Code
-.claude/
+.claude/*
+!.claude/settings.json
 
 # Jupyter
 .ipynb_checkpoints/
