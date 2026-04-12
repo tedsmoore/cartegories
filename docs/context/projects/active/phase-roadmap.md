@@ -61,18 +61,17 @@ Make the game actually playable end-to-end, matching iOS behavior.
 
 **Key files:** `mobile/src/screens/PlayScreen.tsx`, `mobile/src/state/GameContext.tsx`, `mobile/src/screens/GameOverScreen.tsx`
 
-### Phase 3: Backend Deck Catalog API
+### Phase 3: Backend Deck Catalog API ✅
 The backend becomes the authoritative source for deck content, enabling OTA content updates.
 
-- SQLModel models: `Deck`, `Card` (mirroring mobile schema)
-- Alembic migration
-- Seed script: load `data/decks.json` into Postgres
-- Endpoints: `GET /api/decks` (with card counts), `GET /api/decks/{id}/cards`, `GET /api/catalog-version`
-- Include router in `app.py`
+- SQLModel models: `Deck`, `Card`, `CardItem` (items normalized into own table with `is_active` flag for rotation)
+- Alembic migration for all three tables
+- Seed script: load `data/decks.json` into Postgres (15 decks, 1,733 cards, 17,328 items)
+- Endpoints: `GET /api/decks` (with card counts), `GET /api/decks/{id}/cards` (active items only), `GET /api/catalog-version`
+- 13 tests (endpoint + seed + slugify parity with mobile)
+- **TODO:** Build-time SQLite export script — generates a bundled `.sqlite` file from the backend API so the mobile app ships with offline-ready data (no first-launch JSON parsing). This replaces the mobile's `data/decks.json` + seed-on-launch flow.
 
-**Test:** `curl localhost:8000/api/decks` returns the full catalog.
-
-**Key files:** `api/models/deck.py` (new), `api/routers/decks.py` (new), `api/app.py`
+**Key files:** `api/models/deck.py`, `api/routers/decks.py`, `api/seed.py`, `api/app.py`
 
 ### Phase 4: Offline-First Sync Layer
 Connect mobile to backend with graceful offline behavior.

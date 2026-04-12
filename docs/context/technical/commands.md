@@ -9,6 +9,8 @@ docker-compose up -d             # Start PostgreSQL (port 2345)
 docker-compose down              # Stop PostgreSQL
 alembic upgrade head             # Apply database migrations
 alembic revision --autogenerate -m "description"  # Create new migration
+uv run python -m api.seed             # Seed decks and cards into Postgres
+uv run pytest                         # Run backend tests
 ```
 
 ## Mobile (run from mobile/)
