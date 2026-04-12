@@ -44,10 +44,21 @@ class TestSlugify:
 
     def test_produces_unique_ids_for_all_decks(self):
         names = [
-            "Cartoons & Animation", "Food & Drink", "General", "Harry Potter",
-            "History & Geography", "Lord of the Rings", "Music", "Sci-Fi & Fantasy",
-            "Science & Nature", "Sports & Leisure", "Star Wars", "TV & Movies",
-            "Theater", "Video Games", "Wordplay",
+            "Cartoons & Animation",
+            "Food & Drink",
+            "General",
+            "Harry Potter",
+            "History & Geography",
+            "Lord of the Rings",
+            "Music",
+            "Sci-Fi & Fantasy",
+            "Science & Nature",
+            "Sports & Leisure",
+            "Star Wars",
+            "TV & Movies",
+            "Theater",
+            "Video Games",
+            "Wordplay",
         ]
         ids = [slugify(n) for n in names]
         assert len(set(ids)) == 15
@@ -77,6 +88,7 @@ class TestSeedDecks:
 
         with Session(engine) as session:
             first_card = session.exec(select(Card)).first()
+            assert first_card is not None
             items = session.exec(
                 select(CardItem).where(CardItem.card_id == first_card.id)
             ).all()

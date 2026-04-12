@@ -17,7 +17,9 @@ def list_users(session: Session = Depends(get_session)) -> list[User]:
 @router.post("/users", response_model=UserRead, status_code=201)
 def create_user(payload: UserCreate, session: Session = Depends(get_session)) -> User:
     if payload.username is not None:
-        existing = session.exec(select(User).where(User.username == payload.username)).first()
+        existing = session.exec(
+            select(User).where(User.username == payload.username)
+        ).first()
         if existing:
             raise HTTPException(status_code=409, detail="Username already exists")
 
@@ -34,6 +36,6 @@ def create_user(payload: UserCreate, session: Session = Depends(get_session)) ->
     return user
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     with Session(engine) as sessio:
         create_user(UserCreate(username="ted", anonymous_id="local-dev-ted"), sessio)

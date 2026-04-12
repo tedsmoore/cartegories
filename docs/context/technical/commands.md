@@ -11,6 +11,9 @@ alembic upgrade head             # Apply database migrations
 alembic revision --autogenerate -m "description"  # Create new migration
 uv run python -m api.seed             # Seed decks and cards into Postgres
 uv run pytest                         # Run backend tests
+uv run ruff check                     # Lint (auto-fix with --fix)
+uv run ruff format                    # Format code
+uv run ty check                       # Type check
 ```
 
 ## Mobile (run from mobile/)
