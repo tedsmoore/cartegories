@@ -32,14 +32,14 @@ if Ted wants them fixed. This isn't enforced by hooks; it's how you operate.
 ## Context Vault
 
 Everything you need to understand the product, business, brand, technical
-architecture, and active projects lives in `docs/context/`. Read what's relevant
+architecture, and active projects lives in `docs/`. Read what's relevant
 before starting work:
 
-- `product/` — what Cartegories is, who it's for, the vibe, monetization
-- `technical/` — architecture, commands, coding conventions
-- `brand/` — voice, visual identity, positioning
-- `projects/` — active project plans and specs
-- `integrations/` — external services and how they're wired in
+- `docs/product/` — what Cartegories is, who it's for, the vibe, monetization
+- `docs/technical/` — architecture, commands, coding conventions
+- `docs/brand/` — voice, visual identity, positioning
+- `docs/projects/` — active project plans and specs
+- `docs/integrations/` — external services and how they're wired in
 
 When context vault docs are thin or missing, proactively ask Ted to help fill them
 in. Product vision, brand voice, and monetization strategy especially need his
@@ -64,7 +64,7 @@ The original iOS source is always available for reference. Key files:
 ## Agent Dispatch
 
 - For full-stack work (backend + mobile), dispatch parallel agents — one per side.
-  Each reads the relevant `docs/context/technical/` files.
+  Each reads the relevant `docs/technical/` files.
 - For independent tasks within a project, use parallel subagents.
 - For research (competitive intel, service evaluations, app store trends), spin up
   a research agent while continuing other work.
