@@ -29,9 +29,28 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+const linking = {
+  prefixes: ['cartegories://'],
+  config: {
+    screens: {
+      Home: 'home',
+      CardSelection: 'card-selection',
+      Decks: 'decks',
+      Play: 'play',
+      Store: 'store',
+      Settings: 'settings',
+      Timer: 'timer',
+      Tutorial: 'tutorial',
+      Rules: 'rules',
+      GameOver: 'game-over',
+      ReportCard: 'report-card',
+    },
+  },
+};
+
 const RootNavigator = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="CardSelection" component={CardSelectionScreen} options={{ headerShown: false }} />

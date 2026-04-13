@@ -3,6 +3,7 @@
     "name": "cartegories_mobile",
     "slug": "cartegories_mobile",
     "version": "1.0.0",
+    "scheme": "cartegories",
     "orientation": "landscape",
     "icon": "./assets/images/icons/icon.png",
     "userInterfaceStyle": "light",

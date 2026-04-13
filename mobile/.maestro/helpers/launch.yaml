@@ -1,0 +1,5 @@
+appId: com.anonymous.cartegories-mobile
+---
+- launchApp:
+    appId: com.anonymous.cartegories-mobile
+- waitForAnimationToEnd

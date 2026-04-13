@@ -1,0 +1,6 @@
+appId: com.anonymous.cartegories-mobile
+---
+- runFlow: ../helpers/launch.yaml
+- tapOn: "How to Play"
+- waitForAnimationToEnd
+- takeScreenshot: rules

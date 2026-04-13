@@ -1,0 +1,6 @@
+appId: com.anonymous.cartegories-mobile
+---
+- runFlow: ../helpers/launch.yaml
+- tapOn: "Quick Play"
+- waitForAnimationToEnd
+- takeScreenshot: card-selection

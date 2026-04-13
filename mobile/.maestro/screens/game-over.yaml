@@ -1,0 +1,6 @@
+appId: com.anonymous.cartegories-mobile
+---
+- runFlow: ../helpers/launch.yaml
+- openLink: "cartegories://game-over"
+- waitForAnimationToEnd
+- takeScreenshot: game-over
