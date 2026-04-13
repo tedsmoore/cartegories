@@ -14,7 +14,9 @@ def _seed_deck(session: Session, deck_id: str = "general", priority: int = 50) -
 def _seed_card_with_items(
     session: Session, deck_id: str = "general", card_id: int = 1000
 ) -> Card:
-    card = Card(id=card_id, category="Test Category", fact="A fun fact", deck_id=deck_id)
+    card = Card(
+        id=card_id, category="Test Category", fact="A fun fact", deck_id=deck_id
+    )
     session.add(card)
     session.flush()
     for i, text in enumerate(["Item A", "Item B", "Item C"]):
@@ -67,7 +69,9 @@ class TestGetDeckCards:
         session.add(card)
         session.flush()
         session.add(CardItem(text="Active", position=0, is_active=True, card_id=2000))
-        session.add(CardItem(text="Inactive", position=1, is_active=False, card_id=2000))
+        session.add(
+            CardItem(text="Inactive", position=1, is_active=False, card_id=2000)
+        )
         session.commit()
 
         resp = client.get("/api/decks/general/cards")

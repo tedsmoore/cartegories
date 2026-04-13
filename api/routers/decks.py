@@ -32,7 +32,9 @@ def list_decks(session: Session = Depends(get_session)) -> list[DeckRead]:
 
 
 @router.get("/decks/{deck_id}/cards", response_model=list[CardRead])
-def get_deck_cards(deck_id: str, session: Session = Depends(get_session)) -> list[CardRead]:
+def get_deck_cards(
+    deck_id: str, session: Session = Depends(get_session)
+) -> list[CardRead]:
     """Cards for a specific deck, with active items only."""
     deck = session.get(Deck, deck_id)
     if not deck:
@@ -53,7 +55,9 @@ def get_deck_cards(deck_id: str, session: Session = Depends(get_session)) -> lis
                 fact=card.fact,
                 deck_id=card.deck_id,
                 items=[
-                    CardItemRead(text=item.text, position=item.position, is_active=item.is_active)
+                    CardItemRead(
+                        text=item.text, position=item.position, is_active=item.is_active
+                    )
                     for item in active_items
                 ],
             )
