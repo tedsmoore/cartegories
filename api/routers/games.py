@@ -30,7 +30,6 @@ def create_games(
             id=game_data.id,
             anonymous_id=payload.anonymous_id,
             score=game_data.score,
-            drawn_cards_count=game_data.drawn_cards_count,
             played_at=game_data.played_at,
         )
         session.add(game)
@@ -41,7 +40,7 @@ def create_games(
                 GameResult(
                     game_id=game.id,
                     card_item_id=result_data.card_item_id,
-                    result=result_data.result,
+                    nailed=result_data.nailed,
                 )
             )
         accepted += 1

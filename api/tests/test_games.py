@@ -34,13 +34,12 @@ def _make_game_payload(
     results = []
     if item_ids:
         results = [
-            {"card_item_id": item_ids[0], "result": "nailed"},
-            {"card_item_id": item_ids[1], "result": "missed"},
+            {"card_item_id": item_ids[0], "nailed": True},
+            {"card_item_id": item_ids[1], "nailed": False},
         ]
     return {
         "id": game_id,
         "score": 7,
-        "drawn_cards_count": 3,
         "played_at": "2026-04-13T10:30:00Z",
         "results": results,
     }
@@ -124,8 +123,8 @@ class TestCreateGames:
 
         results = session.exec(select(GameResult)).all()
         assert len(results) == 2
-        nailed = [r for r in results if r.result == "nailed"]
-        missed = [r for r in results if r.result == "missed"]
+        nailed = [r for r in results if r.nailed]
+        missed = [r for r in results if not r.nailed]
         assert len(nailed) == 1
         assert len(missed) == 1
         assert nailed[0].card_item_id == item_ids[0]

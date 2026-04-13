@@ -14,7 +14,7 @@ class GameBase(SQLModel):
     id: str = Field(primary_key=True)  # UUID generated on mobile
     anonymous_id: str = Field(index=True)
     score: int
-    drawn_cards_count: int
+
     played_at: datetime
 
 
@@ -30,7 +30,7 @@ class Game(GameBase, table=True):
 
 class GameResultBase(SQLModel):
     card_item_id: int = Field(foreign_key="card_items.id")
-    result: str  # "nailed" or "missed"
+    nailed: bool  # "nailed" or "missed"
 
 
 class GameResult(GameResultBase, table=True):
@@ -46,13 +46,13 @@ class GameResult(GameResultBase, table=True):
 
 class GameResultCreate(SQLModel):
     card_item_id: int
-    result: str
+    nailed: bool
 
 
 class GameCreate(SQLModel):
     id: str
     score: int
-    drawn_cards_count: int
+
     played_at: datetime
     results: list[GameResultCreate]
 

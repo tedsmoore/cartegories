@@ -28,7 +28,6 @@ def upgrade() -> None:
         sa.Column("id", sqlmodel.sql.sqltypes.AutoString(), nullable=False),
         sa.Column("anonymous_id", sqlmodel.sql.sqltypes.AutoString(), nullable=False),
         sa.Column("score", sa.Integer(), nullable=False),
-        sa.Column("drawn_cards_count", sa.Integer(), nullable=False),
         sa.Column("played_at", sa.DateTime(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
@@ -39,7 +38,7 @@ def upgrade() -> None:
     op.create_table(
         "game_results",
         sa.Column("card_item_id", sa.Integer(), nullable=False),
-        sa.Column("result", sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+        sa.Column("nailed", sa.Boolean(), nullable=False),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("game_id", sqlmodel.sql.sqltypes.AutoString(), nullable=False),
         sa.ForeignKeyConstraint(
