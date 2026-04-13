@@ -3,30 +3,32 @@ from sqlmodel import Session, select
 
 from api.db import get_session
 from api.models.game import (
-    Game,
-    GameBatchRequest,
-    GameBatchResponse,
-    GameResult,
+    PlayedGame,
+    PlayedGameBatchRequest,
+    PlayedGameBatchResponse,
+    PlayedGameResult,
 )
 
 router = APIRouter(prefix="/api")
 
 
-@router.post("/games", response_model=GameBatchResponse)
+@router.post("/games", response_model=PlayedGameBatchResponse)
 def create_games(
-    payload: GameBatchRequest, session: Session = Depends(get_session)
-) -> GameBatchResponse:
-    """Batch-insert game results. Skips duplicates by UUID."""
+    payload: PlayedGameBatchRequest, session: Session = Depends(get_session)
+) -> PlayedGameBatchResponse:
+    """Batch-insert played game results. Skips duplicates by UUID."""
     accepted = 0
     duplicates = 0
 
     for game_data in payload.games:
-        existing = session.exec(select(Game).where(Game.id == game_data.id)).first()
+        existing = session.exec(
+            select(PlayedGame).where(PlayedGame.id == game_data.id)
+        ).first()
         if existing:
             duplicates += 1
             continue
 
-        game = Game(
+        game = PlayedGame(
             id=game_data.id,
             anonymous_id=payload.anonymous_id,
             score=game_data.score,
@@ -37,8 +39,8 @@ def create_games(
 
         for result_data in game_data.results:
             session.add(
-                GameResult(
-                    game_id=game.id,
+                PlayedGameResult(
+                    played_game_id=game.id,
                     card_item_id=result_data.card_item_id,
                     nailed=result_data.nailed,
                 )
@@ -46,4 +48,4 @@ def create_games(
         accepted += 1
 
     session.commit()
-    return GameBatchResponse(accepted=accepted, duplicates=duplicates)
+    return PlayedGameBatchResponse(accepted=accepted, duplicates=duplicates)

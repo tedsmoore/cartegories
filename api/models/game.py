@@ -7,61 +7,59 @@ def utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
 
-# ── Game ─────────────────────────────────────────────────────────────
+# ── PlayedGame ───────────────────────────────────────────────────────
 
 
-class GameBase(SQLModel):
+class PlayedGameBase(SQLModel):
     id: str = Field(primary_key=True)  # UUID generated on mobile
     anonymous_id: str = Field(index=True)
     score: int
-
     played_at: datetime
 
 
-class Game(GameBase, table=True):
-    __tablename__ = "games"
+class PlayedGame(PlayedGameBase, table=True):
+    __tablename__ = "played_games"
 
     created_at: datetime = Field(default_factory=utc_now)
-    results: list["GameResult"] = Relationship(back_populates="game")
+    results: list["PlayedGameResult"] = Relationship(back_populates="played_game")
 
 
-# ── GameResult ───────────────────────────────────────────────────────
+# ── PlayedGameResult ─────────────────────────────────────────────────
 
 
-class GameResultBase(SQLModel):
+class PlayedGameResultBase(SQLModel):
     card_item_id: int = Field(foreign_key="card_items.id")
-    nailed: bool  # "nailed" or "missed"
+    nailed: bool
 
 
-class GameResult(GameResultBase, table=True):
-    __tablename__ = "game_results"
+class PlayedGameResult(PlayedGameResultBase, table=True):
+    __tablename__ = "played_game_results"
 
     id: int | None = Field(default=None, primary_key=True)
-    game_id: str = Field(foreign_key="games.id")
-    game: Game | None = Relationship(back_populates="results")
+    played_game_id: str = Field(foreign_key="played_games.id")
+    played_game: PlayedGame | None = Relationship(back_populates="results")
 
 
 # ── Request / Response schemas ───────────────────────────────────────
 
 
-class GameResultCreate(SQLModel):
+class PlayedGameResultCreate(SQLModel):
     card_item_id: int
     nailed: bool
 
 
-class GameCreate(SQLModel):
+class PlayedGameCreate(SQLModel):
     id: str
     score: int
-
     played_at: datetime
-    results: list[GameResultCreate]
+    results: list[PlayedGameResultCreate]
 
 
-class GameBatchRequest(SQLModel):
+class PlayedGameBatchRequest(SQLModel):
     anonymous_id: str
-    games: list[GameCreate]
+    games: list[PlayedGameCreate]
 
 
-class GameBatchResponse(SQLModel):
+class PlayedGameBatchResponse(SQLModel):
     accepted: int
     duplicates: int

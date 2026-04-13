@@ -4,7 +4,7 @@ from sqlmodel import Session
 from sqlmodel import select
 
 from api.models.deck import Card, CardItem, Deck
-from api.models.game import Game, GameResult
+from api.models.game import PlayedGame, PlayedGameResult
 
 
 def _seed_deck_with_items(session: Session) -> list[int]:
@@ -62,7 +62,7 @@ class TestCreateGames:
         assert data["accepted"] == 3
         assert data["duplicates"] == 0
 
-        games = session.exec(select(Game)).all()
+        games = session.exec(select(PlayedGame)).all()
         assert len(games) == 3
 
     def test_idempotent_duplicate(self, client: TestClient, session: Session):
@@ -121,7 +121,7 @@ class TestCreateGames:
         }
         client.post("/api/games", json=payload)
 
-        results = session.exec(select(GameResult)).all()
+        results = session.exec(select(PlayedGameResult)).all()
         assert len(results) == 2
         nailed = [r for r in results if r.nailed]
         missed = [r for r in results if not r.nailed]

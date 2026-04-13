@@ -1,12 +1,12 @@
 from api.models.user import User, UserCreate, UserRead
 from api.models.deck import Card, CardItem, CardRead, Deck, DeckRead
 from api.models.game import (
-    Game,
-    GameBatchRequest,
-    GameBatchResponse,
-    GameCreate,
-    GameResult,
-    GameResultCreate,
+    PlayedGame,
+    PlayedGameBatchRequest,
+    PlayedGameBatchResponse,
+    PlayedGameCreate,
+    PlayedGameResult,
+    PlayedGameResultCreate,
 )
 
 __all__ = [
@@ -18,10 +18,10 @@ __all__ = [
     "Card",
     "CardRead",
     "CardItem",
-    "Game",
-    "GameResult",
-    "GameCreate",
-    "GameResultCreate",
-    "GameBatchRequest",
-    "GameBatchResponse",
+    "PlayedGame",
+    "PlayedGameResult",
+    "PlayedGameCreate",
+    "PlayedGameResultCreate",
+    "PlayedGameBatchRequest",
+    "PlayedGameBatchResponse",
 ]
