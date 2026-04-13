@@ -22,11 +22,11 @@ The app already seeds from bundled `data/decks.json`. Catalog sync runs in the
 background after launch and silently updates local data if a newer server version
 exists. No blocking download needed.
 
-### Idempotent game sync via client_id
+### UUID game identity
 
-Each game gets a `client_id` = `{anonymous_id}:{local_game_id}`. The backend uses a
-unique constraint on this field and skips duplicates. This makes retries safe — the
-client can re-POST the same batch without creating duplicate records.
+Each game gets a UUID generated on the mobile side at save time. This UUID is the
+primary key on both mobile and backend — no auto-increment, no composite keys.
+Retries are safe because the backend skips inserts for IDs that already exist.
 
 ### sync_status state machine
 
@@ -36,6 +36,16 @@ Local games table gets a `sync_status` column with three states:
 - `synced` — confirmed by server
 
 Recovery: on launch, any `syncing` rows revert to `pending` (handles app-killed-mid-sync).
+
+### Normalized game results via card_item_id
+
+Instead of storing nailed/missed items as JSON text blobs, each item result references
+a `card_item_id` (FK to `card_items`). This means:
+- "Which items are missed most?" is a simple GROUP BY query
+- Typos and parenthetical variations in item text don't split analytics
+- Item text can be corrected in the catalog without breaking historical data
+
+Requires giving mobile access to card_item_ids (structured JSON in cards table).
 
 ### No Game→User FK yet
 
@@ -48,20 +58,27 @@ Users. Phase 5 will formalize the relationship when user registration is built.
 
 ### Game Model (`api/models/game.py` — new)
 
-| Field | Type | Notes |
-|---|---|---|
-| id | int, PK auto | |
-| client_id | str, unique, indexed | Idempotency key |
-| anonymous_id | str, indexed | Loose link to User |
-| score | int | |
-| drawn_cards_count | int | |
-| active_decks | str | JSON array |
-| nailed_items | str | JSON array |
-| missed_items | str | JSON array |
-| played_at | datetime | Client timestamp |
-| created_at | datetime | Server timestamp |
+**games table:**
 
-Schemas: `GameCreate`, `GameBatchRequest` (anonymous_id + games[]), `GameBatchResponse` (accepted + duplicates).
+| Field            | Type           | Notes                          |
+| ---------------- | -------------- | ------------------------------ |
+| id               | UUID, PK       | Generated on mobile at save    |
+| anonymous_id     | str, indexed   | Loose link to User             |
+| score            | int            |                                |
+| drawn_cards_count| int            |                                |
+| played_at        | datetime       | Client timestamp               |
+| created_at       | datetime       | Server timestamp               |
+
+**game_results table:**
+
+| Field            | Type           | Notes                          |
+| ---------------- | -------------- | ------------------------------ |
+| id               | int, PK auto   |                                |
+| game_id          | UUID, FK→games | Which game                     |
+| card_item_id     | int, FK→card_items | Which item                 |
+| result           | str            | "nailed" or "missed"           |
+
+Schemas: `GameResultCreate` (card_item_id + result), `GameCreate` (id + score + drawn_cards_count + played_at + results[]), `GameBatchRequest` (anonymous_id + games[]), `GameBatchResponse` (accepted + duplicates).
 
 ### Endpoint (`api/routers/games.py` — new)
 
@@ -70,37 +87,53 @@ POST /api/games
 {
   "anonymous_id": "uuid",
   "games": [
-    { "client_id": "uuid:42", "score": 7, "drawn_cards_count": 3,
-      "active_decks": ["general"], "nailed_items": ["cat"], "missed_items": ["fish"],
+    { "id": "550e8400-...", "score": 7, "drawn_cards_count": 3,
+      "results": [
+        { "card_item_id": 14001, "result": "nailed" },
+        { "card_item_id": 14002, "result": "missed" }
+      ],
       "played_at": "2026-04-13T10:30:00Z" }
   ]
 }
 → { "accepted": 1, "duplicates": 0 }
 ```
 
-Iterates batch, checks `client_id` uniqueness, inserts new rows, skips dupes.
+Iterates batch, skips IDs that already exist, inserts new games + game_results rows.
 Single commit (all-or-nothing).
 
 ### Migration
 
-`alembic revision --autogenerate -m "add games table"`
+`alembic revision --autogenerate -m "add games and game_results tables"`
 
 ### Tests (`api/tests/test_games.py` — new)
 
-- Batch insert (3 games, all accepted)
-- Idempotent duplicate (same client_id twice, second skipped)
+- Batch insert (3 games with results, all accepted)
+- Idempotent duplicate (same UUID twice, second skipped)
 - Empty batch (accepted: 0)
 - Missing required fields (422)
 - Mixed new + duplicate (verify counts)
+- Game results stored with correct card_item_id references
 
 ---
 
 ## Mobile Changes
 
-### Schema: add sync_status (`src/db/schema.ts`)
+### Schema changes (`src/db/schema.ts`)
 
-Add `syncStatus: text('sync_status').notNull().default('pending')` to games table.
+- Change games `id` from auto-increment integer to UUID text (generated via `crypto.randomUUID()`)
+- Drop `active_decks` column (derivable from drawn cards, not needed on backend)
+- Replace `nailed_items`/`missed_items` JSON text with a `game_results` table (game_id, card_item_id, result)
+- Add `syncStatus: text('sync_status').notNull().default('pending')` to games
+- Change cards `items` from plain JSON string array to structured JSON with IDs: `[{id: 14001, text: "The Flintstones"}, ...]`
+
 Generate Drizzle migration.
+
+### GameContext changes (`src/state/GameContext.tsx`)
+
+Track `card_item_id` alongside text during gameplay. Switch states already map to
+item positions — just need the ID available. Change `nailedItems`/`missedItems` from
+`string[]` to `{id: number, text: string}[]`. GameOver screen still displays text,
+sync sends IDs.
 
 ### API Client (`src/services/api.ts` — new)
 
@@ -141,7 +174,7 @@ Base URL switches on `__DEV__`.
 | Case | Handling |
 |---|---|
 | App killed mid-sync | Recovery sweep: `syncing` → `pending` on launch |
-| Duplicate submission | `client_id` unique constraint, dupes skipped |
+| Duplicate submission | UUID PK, dupes skipped |
 | Partial catalog download | Version not updated, full retry next time |
 | Rapid foreground events | `isSyncing` ref guard |
 | Pure offline | Bundled JSON seed, no network ever needed to play |

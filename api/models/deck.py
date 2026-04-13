@@ -41,6 +41,7 @@ class Card(CardBase, table=True):
 
 
 class CardItemRead(SQLModel):
+    id: int
     text: str
     position: int
     is_active: bool = True

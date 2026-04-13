@@ -1,0 +1,50 @@
+from fastapi import APIRouter, Depends
+from sqlmodel import Session, select
+
+from api.db import get_session
+from api.models.game import (
+    Game,
+    GameBatchRequest,
+    GameBatchResponse,
+    GameResult,
+)
+
+router = APIRouter(prefix="/api")
+
+
+@router.post("/games", response_model=GameBatchResponse)
+def create_games(
+    payload: GameBatchRequest, session: Session = Depends(get_session)
+) -> GameBatchResponse:
+    """Batch-insert game results. Skips duplicates by UUID."""
+    accepted = 0
+    duplicates = 0
+
+    for game_data in payload.games:
+        existing = session.exec(select(Game).where(Game.id == game_data.id)).first()
+        if existing:
+            duplicates += 1
+            continue
+
+        game = Game(
+            id=game_data.id,
+            anonymous_id=payload.anonymous_id,
+            score=game_data.score,
+            drawn_cards_count=game_data.drawn_cards_count,
+            played_at=game_data.played_at,
+        )
+        session.add(game)
+        session.flush()
+
+        for result_data in game_data.results:
+            session.add(
+                GameResult(
+                    game_id=game.id,
+                    card_item_id=result_data.card_item_id,
+                    result=result_data.result,
+                )
+            )
+        accepted += 1
+
+    session.commit()
+    return GameBatchResponse(accepted=accepted, duplicates=duplicates)

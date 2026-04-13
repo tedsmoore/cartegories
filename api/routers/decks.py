@@ -56,7 +56,10 @@ def get_deck_cards(
                 deck_id=card.deck_id,
                 items=[
                     CardItemRead(
-                        text=item.text, position=item.position, is_active=item.is_active
+                        id=item.id,
+                        text=item.text,
+                        position=item.position,
+                        is_active=item.is_active,
                     )
                     for item in active_items
                 ],
