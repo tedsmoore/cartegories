@@ -61,18 +61,6 @@ The original iOS source is always available for reference. Key files:
 - `Global.swift` — shared state (active decks, playable cards, drawn cards)
 - `Resources/` — image assets, sounds, data files
 
-## Git Conventions
-
-- Squash to one commit per feature before creating a PR. The commit message is the feature name, not a list of steps.
-- `pnpm start --clear` after rebases or dependency changes — Metro caches aggressively and will serve stale bundles.
-
-## Mobile Dev Workflow
-
-- After changing `app.json` (schemes, plugins, native config): run `expo prebuild --platform ios` then `npx expo run:ios --device "i17"` to regenerate and rebuild the native project.
-- **Maestro UI testing**: flows live in `mobile/.maestro/screens/`. Run with `maestro test .maestro/screens/<screen>.yaml`. Screenshots land in the working directory.
-- Maestro screenshots are in portrait pixel orientation even for landscape apps. Rotate with `sips -r 270 screenshot.png` before viewing.
-- Deep links (`cartegories://<screen>`) trigger a system confirmation dialog on first use. Handle with `tapOn: point: "60%,50%"` in Maestro flows.
-
 ## Agent Dispatch
 
 - For full-stack work (backend + mobile), dispatch parallel agents — one per side.

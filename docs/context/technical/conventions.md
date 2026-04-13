@@ -27,5 +27,28 @@ Before committing mobile changes, always verify:
 1. `pnpm test` passes (from `mobile/`)
 2. `npx expo export --platform ios` succeeds (catches Metro bundler errors)
 
-These are behavioral expectations, not automated hooks (yet — pre-commit hook setup
-is a planned follow-up project).
+## Metro Cache
+
+`pnpm start --clear` after rebases or dependency changes — Metro caches aggressively
+and will serve stale bundles otherwise.
+
+## Native Rebuilds
+
+After changing `app.json` (schemes, plugins, native config):
+1. `expo prebuild --platform ios` — regenerates native project
+2. `npx expo run:ios --device "i17"` — rebuilds and installs on simulator
+
+JS-only changes don't need a rebuild — Metro hot-reloads them.
+
+## Maestro UI Testing
+
+Flows live in `mobile/.maestro/screens/`. Run with:
+```bash
+maestro test .maestro/screens/<screen>.yaml
+```
+
+Screenshots land in the working directory in portrait pixel orientation even for
+landscape apps. Rotate with `sips -r 270 screenshot.png` before viewing.
+
+Deep links (`cartegories://<screen>`) trigger a system confirmation dialog on first
+use per install. Handle with `tapOn: point: "60%,50%"` in Maestro flows.
