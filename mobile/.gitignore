@@ -3,6 +3,9 @@
 # dependencies
 node_modules/
 
+# maestro screenshots
+.maestro/screenshots/
+
 # Expo
 .expo/
 dist/

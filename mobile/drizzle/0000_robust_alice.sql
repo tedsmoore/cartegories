@@ -1,12 +1,3 @@
-CREATE TABLE `cards` (
-	`id` integer PRIMARY KEY NOT NULL,
-	`category` text NOT NULL,
-	`items` text NOT NULL,
-	`fact` text,
-	`deck_id` text NOT NULL,
-	FOREIGN KEY (`deck_id`) REFERENCES `decks`(`id`) ON UPDATE no action ON DELETE no action
-);
---> statement-breakpoint
 CREATE TABLE `decks` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
@@ -14,6 +5,15 @@ CREATE TABLE `decks` (
 	`image` text,
 	`is_free` integer DEFAULT false NOT NULL,
 	`product_id` text
+);
+--> statement-breakpoint
+CREATE TABLE `cards` (
+	`id` integer PRIMARY KEY NOT NULL,
+	`category` text NOT NULL,
+	`items` text NOT NULL,
+	`fact` text,
+	`deck_id` text NOT NULL,
+	FOREIGN KEY (`deck_id`) REFERENCES `decks`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `games` (

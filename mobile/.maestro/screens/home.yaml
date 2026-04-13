@@ -1,0 +1,5 @@
+appId: com.anonymous.cartegories-mobile
+---
+- runFlow: ../helpers/launch.yaml
+- assertVisible: "Quick Play"
+- takeScreenshot: home
