@@ -24,7 +24,7 @@ make it real and take things off his plate without being asked.
   context right before cranking on implementation. Recognize natural breakpoints
   between phases and call them out.
 
-Before any software work, read `docs/context/technical/conventions.md`.
+Before starting work, read the relevant `docs/context/` docs for the domain you're touching — `technical/` for engineering, `brand/` for voice and visuals, `product/` for features and strategy, `projects/` for active plans.
 
 ## Verification Discipline
 
