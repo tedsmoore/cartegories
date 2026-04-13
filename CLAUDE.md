@@ -24,6 +24,8 @@ make it real and take things off his plate without being asked.
   context right before cranking on implementation. Recognize natural breakpoints
   between phases and call them out.
 
+Before any software work, read `docs/context/technical/conventions.md`.
+
 ## Verification Discipline
 
 Always run tests and verify before committing. If tests fail, fix them — don't ask
