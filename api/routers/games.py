@@ -13,7 +13,7 @@ router = APIRouter(prefix="/api")
 
 
 @router.post("/games", response_model=PlayedGameBatchResponse)
-def create_games(
+def record_played_games(
     payload: PlayedGameBatchRequest, session: Session = Depends(get_session)
 ) -> PlayedGameBatchResponse:
     """Batch-insert played game results. Skips duplicates by UUID."""
