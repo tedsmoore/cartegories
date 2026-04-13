@@ -45,6 +45,22 @@ When context vault docs are thin or missing, proactively ask Ted to help fill th
 in. Product vision, brand voice, and monetization strategy especially need his
 input — don't guess at these, collaborate.
 
+## Design Philosophy
+
+This is a recreation of an original iOS app — a cultural gem. When the solution exists in the original version, use that. Reuse actual image assets from `mobile/assets/images/` (mountain scape, blobs, buttons, icons, etc.) — never recreate them with CSS, SVG, or other approximations.
+
+### iOS Reference (`/Users/ted/dev/cartegories_ios/`)
+The original iOS source is always available for reference. Key files:
+- `HomePageViewController.swift` — home screen
+- `NewCardViewController.swift` — card selection (draw card, play, settings)
+- `DeckCollectionViewController.swift` — deck toggles, timer, sound, purchases
+- `GameViewController.swift` — gameplay with timer, item switches
+- `GameOverViewController.swift` — score display
+- `MessageViewController.swift` — report card (nailed/missed, comment, fun fact)
+- `Main.storyboard` — all segues and view layout
+- `Global.swift` — shared state (active decks, playable cards, drawn cards)
+- `Resources/` — image assets, sounds, data files
+
 ## Agent Dispatch
 
 - For full-stack work (backend + mobile), dispatch parallel agents — one per side.
