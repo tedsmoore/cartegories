@@ -34,7 +34,7 @@ const RootNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="CardSelection" component={CardSelectionScreen} options={{ title: 'Draw a Card' }} />
+        <Stack.Screen name="CardSelection" component={CardSelectionScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Decks" component={DecksScreen} options={{ title: 'Decks' }} />
         <Stack.Screen name="Play" component={PlayScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Store" component={StoreScreen} options={{ title: 'Store' }} />

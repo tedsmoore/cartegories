@@ -22,6 +22,9 @@
     ],
     "transform": {
       "^.+\\.tsx?$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "\\.(png|jpg|jpeg|gif|webp|svg)$": "<rootDir>/__mocks__/fileMock.js"
     }
   },
   "dependencies": {
@@ -36,6 +39,7 @@
     "expo-av": "~16.0.8",
     "expo-font": "~14.0.10",
     "expo-linear-gradient": "~15.0.8",
+    "expo-sensors": "^55.0.13",
     "expo-sqlite": "~16.0.10",
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",
