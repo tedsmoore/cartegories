@@ -1,6 +1,8 @@
 appId: com.anonymous.cartegories-mobile
 ---
 - runFlow: ../helpers/launch.yaml
-- tapOn: "Quick Play"
+- openLink: "cartegories://card-selection"
+- tapOn:
+    point: "60%,50%"
 - waitForAnimationToEnd
 - takeScreenshot: card-selection
