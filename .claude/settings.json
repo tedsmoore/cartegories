@@ -7,7 +7,23 @@
       "Bash(alembic *)",
       "Bash(docker-compose *)",
       "Bash(docker *)",
-      "Bash(expo *)"
+      "Bash(expo *)",
+      "Bash(sqlite3 *)",
+      "Bash(xcrun simctl *)",
+      "Bash(maestro *)",
+      "Bash(sips *)",
+      "Bash(ngrok *)",
+      "Bash(brew *)",
+      "Bash(base64 *)",
+      "Skill(update-config)",
+      "Skill(save)",
+      "mcp__jetbrains__list_directory_tree",
+      "mcp__jetbrains__get_file_text_by_path",
+      "mcp__jetbrains__find_files_by_name_keyword",
+      "mcp__jetbrains__find_files_by_glob",
+      "mcp__jetbrains__get_file_problems",
+      "mcp__jetbrains__search_in_files_by_text",
+      "mcp__jetbrains__search_in_files_by_regex"
     ]
   }
 }
