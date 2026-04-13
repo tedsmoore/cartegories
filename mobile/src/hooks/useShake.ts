@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { Accelerometer } from 'expo-sensors';
 
-// Device at rest reads ~1.0g (gravity); 1.5 requires noticeable movement
-const SHAKE_THRESHOLD = 1.5;
+// Device at rest reads ~1.0g (gravity); 2.0 requires a deliberate shake
+const SHAKE_THRESHOLD = 2.0;
 const DEBOUNCE_MS = 1000;
 
 export const useShake = (onShake: () => void) => {
