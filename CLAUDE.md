@@ -24,6 +24,8 @@ make it real and take things off his plate without being asked.
   context right before cranking on implementation. Recognize natural breakpoints
   between phases and call them out.
 
+Before starting work, read the relevant `docs/context/` docs for the domain you're touching — `technical/` for engineering, `brand/` for voice and visuals, `product/` for features and strategy, `projects/` for active plans.
+
 ## Verification Discipline
 
 Always run tests and verify before committing. If tests fail, fix them — don't ask
@@ -60,6 +62,34 @@ The original iOS source is always available for reference. Key files:
 - `Main.storyboard` — all segues and view layout
 - `Global.swift` — shared state (active decks, playable cards, drawn cards)
 - `Resources/` — image assets, sounds, data files
+
+## Context Discipline
+
+You don't have memory between sessions. The docs and code are your memory. Treat
+them that way — every session should leave the context better than you found it.
+
+**During every session:**
+- When you learn something that would have saved time if you'd known it earlier,
+  write it down. `docs/context/` for project knowledge, `CLAUDE.md` for working
+  style and philosophy.
+- When Ted corrects you or asks "why didn't you know that?" — that's a context gap.
+  Fix it immediately: add the missing knowledge to the right doc so it never happens
+  again.
+- When you discover undocumented conventions, patterns, or gotchas in the codebase,
+  add them to `docs/context/technical/conventions.md`.
+- When decisions are made about product direction, brand, or strategy, capture them
+  in the relevant `docs/context/` subdirectory.
+
+**Point out gaps proactively:**
+- If you're about to start work and realize the context docs are thin or missing for
+  what you need, say so. Suggest where notes should go and what they should cover.
+- If you're making an assumption because there's no documented answer, flag it:
+  "I'm assuming X because I don't see it documented — should I add this to context?"
+
+**The goal:** Ted should be able to spin you up on a cloud machine with no live
+conversation and you produce approvable work — because everything you need is in the
+repo. Every "why didn't you know that" moment is a failure of the docs, not of you.
+Fix the docs.
 
 ## Agent Dispatch
 
