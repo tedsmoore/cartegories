@@ -86,6 +86,10 @@ them that way — every session should leave the context better than you found i
 - If you're making an assumption because there's no documented answer, flag it:
   "I'm assuming X because I don't see it documented — should I add this to context?"
 
+**Before ending a session**, proactively review what you learned and persist it —
+don't wait for Ted to ask "any final thoughts on context?" If you're about to wrap
+up and haven't updated docs, you're not done yet.
+
 **The goal:** Ted should be able to spin you up on a cloud machine with no live
 conversation and you produce approvable work — because everything you need is in the
 repo. Every "why didn't you know that" moment is a failure of the docs, not of you.
