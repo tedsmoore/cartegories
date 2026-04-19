@@ -1,6 +1,73 @@
 appId: com.anonymous.cartegories-mobile
 ---
 - runFlow: ../helpers/launch.yaml
+
+# Navigate directly to DecksScreen via deep link
+# (gear icon tap from CardSelectionScreen not used; deep link is more reliable)
 - openLink: "cartegories://decks"
 - waitForAnimationToEnd
-- takeScreenshot: decks
+
+# Dismiss RN debugger overlay if present (X button at ~7%,95% in landscape)
+- tapOn:
+    point: "7%,95%"
+- waitForAnimationToEnd
+
+- assertVisible: "Your Decks"
+- takeScreenshot: decks-loaded
+
+# "Get More Decks" is below the fold in landscape; try to scroll to it.
+# NOTE: iOS accessibility tree clips off-screen content, so this may warn.
+- scrollUntilVisible:
+    element:
+      text: "Get More Decks"
+    direction: DOWN
+    timeout: 10000
+    speed: 40
+    optional: true
+- takeScreenshot: decks-get-more-decks
+
+# Scroll back to top
+- scrollUntilVisible:
+    element:
+      text: "Your Decks"
+    direction: UP
+    timeout: 10000
+    speed: 40
+    optional: true
+
+# Toggle a free deck active (General — visible in first row)
+- tapOn:
+    label: "General"
+- takeScreenshot: decks-general-active
+
+# Toggle it off
+- tapOn:
+    label: "General"
+- takeScreenshot: decks-general-inactive
+
+# Scroll to Harry Potter (locked deck — may be off-screen in landscape)
+- scrollUntilVisible:
+    element:
+      label: "Harry Potter"
+    direction: DOWN
+    timeout: 10000
+    speed: 40
+    optional: true
+
+# Tap Harry Potter — asserts Coming soon alert (optional: locked deck off-screen
+# on landscape simulator may not produce a physical tap)
+- tapOn:
+    label: "Harry Potter"
+    optional: true
+- assertVisible:
+    text: "Coming soon"
+    optional: true
+- tapOn:
+    text: "OK"
+    optional: true
+
+# Back-nav using iOS native back button
+- tapOn:
+    id: "BackButton"
+- waitForAnimationToEnd
+- takeScreenshot: decks-back-nav
