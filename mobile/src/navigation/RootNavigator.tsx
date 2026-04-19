@@ -54,7 +54,16 @@ const RootNavigator = () => {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="CardSelection" component={CardSelectionScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Decks" component={DecksScreen} options={{ title: 'Decks' }} />
+        <Stack.Screen
+          name="Decks"
+          component={DecksScreen}
+          options={{
+            title: 'Decks',
+            headerShown: true,
+            headerBackTitle: 'Back',
+            headerTintColor: '#1EAFE2',
+          }}
+        />
         <Stack.Screen name="Play" component={PlayScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Store" component={StoreScreen} options={{ title: 'Store' }} />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
