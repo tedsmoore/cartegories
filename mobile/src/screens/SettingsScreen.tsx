@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Switch, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Switch, Pressable, Alert } from 'react-native';
+import * as StoreReview from 'expo-store-review';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useSoundContext } from '../state/SoundContext';
@@ -30,6 +31,19 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.linkText}>Edit</Text>
         </Pressable>
       </View>
+
+      <Pressable
+        style={styles.linkButton}
+        onPress={async () => {
+          if (await StoreReview.isAvailableAsync()) {
+            StoreReview.requestReview();
+          } else {
+            Alert.alert('Rate Us', 'Store review is not available on this device.');
+          }
+        }}
+      >
+        <Text style={styles.linkText}>Rate Us</Text>
+      </Pressable>
 
       <Pressable style={styles.linkButton} onPress={() => navigation.navigate('Tutorial')}>
         <Text style={styles.linkText}>View tutorial</Text>
