@@ -2,6 +2,10 @@
 
 Tracking which screens match the original iOS app and what work remains.
 
+## Parity Philosophy
+
+**Preserve visuals and feel, not architecture.** The iOS app was Ted's first software project — visually beloved, architecturally naive. Use iOS as a reference for *what features exist* and *what they look/feel like*, not as a blueprint for how to structure screens, navigation, or component hierarchies. When porting surfaces a structural improvement (separation of concerns, cleaner mental models, dropping redundant cruft), take it. See CLAUDE.md → Design Philosophy.
+
 ## Complete
 
 | Mobile Screen | iOS ViewController | Notes |

@@ -49,7 +49,9 @@ input — don't guess at these, collaborate.
 
 ## Design Philosophy
 
-This is a recreation of an original iOS app — a cultural gem. When the solution exists in the original version, use that. Reuse actual image assets from `mobile/assets/images/` (mountain scape, blobs, buttons, icons, etc.) — never recreate them with CSS, SVG, or other approximations.
+This is a recreation of an original iOS app — a cultural gem. **Preserve the visual identity and game mechanics**: reuse actual image assets from `mobile/assets/images/` (mountain scape, blobs, buttons, icons, etc.) — never recreate them with CSS, SVG, or other approximations. Match the look, feel, and gameplay loop.
+
+**Do not slavishly preserve the iOS code's information architecture, layout hierarchy, or component organization.** The original was Ted's first real software project — visually charming but architecturally naive (e.g., DecksScreen crammed deck management, timer settings, sound toggle, IAP, and Rate Us into one collection view across three sections). Use the iOS code as a reference for *what features exist* and *how they should look and feel*, not for *how they should be structured*. Apply modern UX best practices: separation of concerns, clear mental models, sensible navigation. When parity work surfaces a structural improvement, take it.
 
 ### iOS Reference (`/Users/ted/dev/cartegories_ios/`)
 The original iOS source is always available for reference. Key files:
