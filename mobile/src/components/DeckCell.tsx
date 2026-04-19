@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, View, Image, Text, StyleSheet } from 'react-native';
+import { Pressable, Image, Text, StyleSheet } from 'react-native';
 import { Deck } from '../types';
 import { getBlobImage } from '../constants/deckImages';
 
