@@ -120,7 +120,7 @@ const CardSelectionScreen: React.FC<Props> = ({ navigation }) => {
               style={styles.navIcon}
             />
           </Pressable>
-          <Pressable onPress={() => navigation.navigate('Decks')} hitSlop={12} accessibilityLabel="Decks">
+          <Pressable onPress={() => navigation.navigate('Decks')} hitSlop={12} accessibilityLabel="Decks" testID="decks-button">
             <Image
               source={require('../../assets/images/white-gear.png')}
               style={styles.navIcon}

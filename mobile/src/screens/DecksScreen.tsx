@@ -38,8 +38,12 @@ const DecksScreen: React.FC<Props> = () => {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.sectionHeader}>Your Decks</Text>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      testID="decks-scroll-view"
+    >
+      <Text style={styles.sectionHeader} testID="your-decks-header">Your Decks</Text>
       <FlatList
         data={owned}
         keyExtractor={(item) => item.id}
@@ -54,7 +58,7 @@ const DecksScreen: React.FC<Props> = () => {
         )}
       />
 
-      <Text style={styles.sectionHeader}>Get More Decks</Text>
+      <Text style={styles.sectionHeader} testID="get-more-decks-header">Get More Decks</Text>
       <FlatList
         data={locked}
         keyExtractor={(item) => item.id}
