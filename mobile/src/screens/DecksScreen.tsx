@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGame } from '../state/GameContext';
@@ -45,11 +46,8 @@ const DecksScreen: React.FC<Props> = () => {
   };
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.content}
-      testID="decks-scroll-view"
-    >
+    <SafeAreaView style={styles.container} edges={['left', 'right']}>
+      <ScrollView contentContainerStyle={styles.content} testID="decks-scroll-view">
       <Text style={styles.sectionHeader} testID="your-decks-header">Your Decks</Text>
       <View style={styles.grid}>
         {ownedSorted.map((deck) => (
@@ -71,7 +69,8 @@ const DecksScreen: React.FC<Props> = () => {
           </View>
         ))}
       </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -98,11 +97,11 @@ const styles = StyleSheet.create({
     padding: 6,
   },
   sectionHeader: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '700',
     color: ACCENT,
     marginTop: 12,
-    marginBottom: 4,
+    marginBottom: 6,
     paddingHorizontal: 6,
   },
 });
