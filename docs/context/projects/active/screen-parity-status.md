@@ -36,6 +36,7 @@ Tracking which screens match the original iOS app and what work remains.
 
 ## Known Issues
 
+- **SettingsScreen Timer subtitle is hardcoded** — the row reads "Currently 60 seconds" regardless of the user's actual saved timer value. Local `useState(60)` instead of `GameContext`. Bundled with the deferred full SettingsScreen rework.
 - **DecksScreen cell sizing in small viewports** — DeckCell uses `flex: 1` + `aspectRatio: 1` which produces oversized cells on small landscape simulators (i17 default profile). Only the first row of "Your Decks" is visible; "Get More Decks" is unreachable via scroll. Reproduces in Maestro tests on the small profile. Untested on real hardware — likely fine on full-size device. Maestro flow has back-nav, scroll, and locked-deck assertions deferred until cell sizing is fixed.
 - **Bundle ID** — currently `com.anonymous.cartegories-mobile`, needs renaming to `com.cartegories.app` or similar (separate task)
 - **Animation library** — using React Native `Animated` which is known to be flaky. Planned migration to `react-native-reanimated` after parity is complete.
