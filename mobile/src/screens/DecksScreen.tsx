@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Alert, Pressable } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGame } from '../state/GameContext';
@@ -15,6 +15,7 @@ const NUM_COLS = 5;
 
 const DecksScreen: React.FC<Props> = ({ navigation }) => {
   const { decks, game, setActiveDecks, loading } = useGame();
+  const insets = useSafeAreaInsets();
 
   if (loading) {
     return (
@@ -46,8 +47,17 @@ const DecksScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      <View style={styles.headerBar}>
+    <View style={styles.container}>
+      <View
+        style={[
+          styles.headerBar,
+          {
+            paddingTop: insets.top,
+            paddingLeft: insets.left + 12,
+            paddingRight: insets.right + 12,
+          },
+        ]}
+      >
         <Pressable
           onPress={() => navigation.goBack()}
           hitSlop={16}
@@ -59,7 +69,8 @@ const DecksScreen: React.FC<Props> = ({ navigation }) => {
         <Text style={styles.headerTitle}>Decks</Text>
         <View style={styles.backButton} />
       </View>
-      <ScrollView contentContainerStyle={styles.content} testID="decks-scroll-view">
+      <SafeAreaView style={styles.body} edges={['left', 'right', 'bottom']}>
+        <ScrollView contentContainerStyle={styles.content} testID="decks-scroll-view">
       <Text style={styles.sectionHeader} testID="your-decks-header">Your Decks</Text>
       <View style={styles.grid}>
         {ownedSorted.map((deck) => (
@@ -81,13 +92,18 @@ const DecksScreen: React.FC<Props> = ({ navigation }) => {
           </View>
         ))}
       </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: ACCENT,
+  },
+  body: {
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
@@ -97,12 +113,11 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   headerBar: {
-    height: 32,
     backgroundColor: ACCENT,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 12,
+    minHeight: 32,
   },
   headerTitle: {
     color: '#FFFFFF',
