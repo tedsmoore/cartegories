@@ -1,4 +1,5 @@
 import React from 'react';
+import { Pressable, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/HomeScreen';
@@ -57,12 +58,23 @@ const RootNavigator = () => {
         <Stack.Screen
           name="Decks"
           component={DecksScreen}
-          options={{
+          options={({ navigation }) => ({
             title: 'Decks',
             headerShown: true,
-            headerBackTitle: 'Back',
             headerTintColor: '#1EAFE2',
-          }}
+            headerBackVisible: false,
+            headerLeft: () => (
+              <Pressable
+                onPress={() => navigation.goBack()}
+                hitSlop={16}
+                accessibilityLabel="Back"
+              >
+                <Text style={{ color: '#1EAFE2', fontSize: 17, fontWeight: '600' }}>
+                  {'< Back'}
+                </Text>
+              </Pressable>
+            ),
+          })}
         />
         <Stack.Screen name="Play" component={PlayScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Store" component={StoreScreen} options={{ title: 'Store' }} />

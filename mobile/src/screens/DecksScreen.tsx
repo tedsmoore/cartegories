@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, FlatList, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGame } from '../state/GameContext';
@@ -25,6 +25,13 @@ const DecksScreen: React.FC<Props> = () => {
 
   const { owned, locked } = partitionDecks(decks);
 
+  // General is the canonical "first" deck — pin it before everything else.
+  const ownedSorted = [...owned].sort((a, b) => {
+    if (a.name === 'General') return -1;
+    if (b.name === 'General') return 1;
+    return 0;
+  });
+
   const toggleActive = (deck: Deck) => {
     const isActive = game.activeDecks.includes(deck.id);
     const next = isActive
@@ -44,30 +51,26 @@ const DecksScreen: React.FC<Props> = () => {
       testID="decks-scroll-view"
     >
       <Text style={styles.sectionHeader} testID="your-decks-header">Your Decks</Text>
-      <FlatList
-        data={owned}
-        keyExtractor={(item) => item.id}
-        numColumns={NUM_COLS}
-        scrollEnabled={false}
-        renderItem={({ item }) => (
-          <DeckCell
-            deck={item}
-            active={game.activeDecks.includes(item.id)}
-            onPress={() => toggleActive(item)}
-          />
-        )}
-      />
+      <View style={styles.grid}>
+        {ownedSorted.map((deck) => (
+          <View key={deck.id} style={styles.cellWrap}>
+            <DeckCell
+              deck={deck}
+              active={game.activeDecks.includes(deck.id)}
+              onPress={() => toggleActive(deck)}
+            />
+          </View>
+        ))}
+      </View>
 
       <Text style={styles.sectionHeader} testID="get-more-decks-header">Get More Decks</Text>
-      <FlatList
-        data={locked}
-        keyExtractor={(item) => item.id}
-        numColumns={NUM_COLS}
-        scrollEnabled={false}
-        renderItem={({ item }) => (
-          <DeckCell deck={item} locked onPress={() => showLockedAlert(item)} />
-        )}
-      />
+      <View style={styles.grid}>
+        {locked.map((deck) => (
+          <View key={deck.id} style={styles.cellWrap}>
+            <DeckCell deck={deck} locked onPress={() => showLockedAlert(deck)} />
+          </View>
+        ))}
+      </View>
     </ScrollView>
   );
 };
@@ -85,6 +88,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
+  },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  cellWrap: {
+    width: `${100 / NUM_COLS}%`,
+    padding: 6,
   },
   sectionHeader: {
     fontSize: 16,

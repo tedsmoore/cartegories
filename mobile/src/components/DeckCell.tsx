@@ -31,8 +31,8 @@ const DeckCell: React.FC<Props> = ({ deck, active, locked, onPress }) => {
 
 const styles = StyleSheet.create({
   cell: {
-    flex: 1,
-    margin: 6,
+    width: '100%',
+    aspectRatio: 1,
     padding: 8,
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
     borderColor: ACCENT,
   },
   image: {
-    width: '80%',
-    aspectRatio: 1,
+    flex: 1,
+    width: '90%',
   },
   label: {
     marginTop: 4,

@@ -49,3 +49,7 @@ build/
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Stray dev screenshots (sim captures dropped in cwd)
+/*.png
+/mobile/*.png
