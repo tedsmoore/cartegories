@@ -117,11 +117,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    minHeight: 56,
+    minHeight: 44,
   },
   headerTitle: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 19,
     fontWeight: '700',
   },
   backButton: {
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     color: '#FFFFFF',
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: '600',
   },
   centered: {
