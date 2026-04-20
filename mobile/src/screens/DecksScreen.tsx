@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Alert, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
@@ -13,7 +13,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Decks'>;
 const ACCENT = '#1EAFE2';
 const NUM_COLS = 5;
 
-const DecksScreen: React.FC<Props> = () => {
+const DecksScreen: React.FC<Props> = ({ navigation }) => {
   const { decks, game, setActiveDecks, loading } = useGame();
 
   if (loading) {
@@ -46,8 +46,16 @@ const DecksScreen: React.FC<Props> = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['left', 'right']}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <ScrollView contentContainerStyle={styles.content} testID="decks-scroll-view">
+      <Pressable
+        onPress={() => navigation.goBack()}
+        hitSlop={16}
+        accessibilityLabel="Back"
+        style={styles.backButton}
+      >
+        <Text style={styles.backText}>{'< Back'}</Text>
+      </Pressable>
       <Text style={styles.sectionHeader} testID="your-decks-header">Your Decks</Text>
       <View style={styles.grid}>
         {ownedSorted.map((deck) => (
@@ -80,8 +88,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   content: {
-    padding: 12,
+    paddingHorizontal: 12,
+    paddingTop: 8,
     paddingBottom: 32,
+  },
+  backButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 6,
+    alignSelf: 'flex-start',
+  },
+  backText: {
+    color: ACCENT,
+    fontSize: 17,
+    fontWeight: '600',
   },
   centered: {
     flex: 1,
