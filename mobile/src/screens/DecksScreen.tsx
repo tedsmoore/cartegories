@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 12,
+    paddingBottom: 32,
   },
   centered: {
     flex: 1,

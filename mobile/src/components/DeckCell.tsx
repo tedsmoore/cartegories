@@ -32,7 +32,7 @@ const DeckCell: React.FC<Props> = ({ deck, active, locked, onPress }) => {
 const styles = StyleSheet.create({
   cell: {
     width: '100%',
-    aspectRatio: 1,
+    aspectRatio: 0.8,
     padding: 8,
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
