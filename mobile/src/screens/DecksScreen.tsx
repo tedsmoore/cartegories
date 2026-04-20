@@ -47,15 +47,19 @@ const DecksScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <View style={styles.headerBar}>
+        <Pressable
+          onPress={() => navigation.goBack()}
+          hitSlop={16}
+          accessibilityLabel="Back"
+          style={styles.backButton}
+        >
+          <Text style={styles.backText}>{'< Back'}</Text>
+        </Pressable>
+        <Text style={styles.headerTitle}>Decks</Text>
+        <View style={styles.backButton} />
+      </View>
       <ScrollView contentContainerStyle={styles.content} testID="decks-scroll-view">
-      <Pressable
-        onPress={() => navigation.goBack()}
-        hitSlop={16}
-        accessibilityLabel="Back"
-        style={styles.backButton}
-      >
-        <Text style={styles.backText}>{'< Back'}</Text>
-      </Pressable>
       <Text style={styles.sectionHeader} testID="your-decks-header">Your Decks</Text>
       <View style={styles.grid}>
         {ownedSorted.map((deck) => (
@@ -92,14 +96,27 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 32,
   },
+  headerBar: {
+    height: 32,
+    backgroundColor: ACCENT,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+  },
+  headerTitle: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
+  },
   backButton: {
-    paddingVertical: 4,
-    paddingHorizontal: 6,
-    alignSelf: 'flex-start',
+    paddingVertical: 2,
+    paddingHorizontal: 4,
+    minWidth: 70,
   },
   backText: {
-    color: ACCENT,
-    fontSize: 17,
+    color: '#FFFFFF',
+    fontSize: 15,
     fontWeight: '600',
   },
   centered: {
