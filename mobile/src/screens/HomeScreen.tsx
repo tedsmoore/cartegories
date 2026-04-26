@@ -107,6 +107,20 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         style={[styles.safeArea, { paddingHorizontal: isLandscape ? 28 : 20 }]}
         edges={['top', 'bottom']}
       >
+        <Pressable
+          onPress={() => navigation.navigate('Settings')}
+          hitSlop={12}
+          accessibilityLabel="Settings"
+          accessibilityRole="button"
+          style={styles.settingsButton}
+        >
+          <Image
+            source={require('../../assets/images/white-gear.png')}
+            style={styles.settingsIcon}
+            resizeMode="contain"
+          />
+        </Pressable>
+
         <Animated.Image
           source={require('../../assets/images/cloud.png')}
           resizeMode="contain"
@@ -262,6 +276,17 @@ const styles = StyleSheet.create({
   },
   primaryButtonWrapper: {
     width: 200,
+  },
+  settingsButton: {
+    position: 'absolute',
+    top: 24,
+    right: 44,
+    zIndex: 10,
+    padding: 6,
+  },
+  settingsIcon: {
+    width: 28,
+    height: 28,
   },
 });
 

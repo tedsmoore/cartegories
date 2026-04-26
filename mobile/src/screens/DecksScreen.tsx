@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Alert, Pressable } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGame } from '../state/GameContext';
 import { partitionDecks } from '../utils/partitionDecks';
 import DeckCell from '../components/DeckCell';
+import ScreenHeader from '../components/ScreenHeader';
 import { Deck } from '../types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Decks'>;
@@ -15,8 +16,6 @@ const NUM_COLS = 5;
 
 const DecksScreen: React.FC<Props> = ({ navigation }) => {
   const { decks, game, setActiveDecks, loading } = useGame();
-  const insets = useSafeAreaInsets();
-
   if (loading) {
     return (
       <View style={styles.centered}>
@@ -48,27 +47,7 @@ const DecksScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View
-        style={[
-          styles.headerBar,
-          {
-            paddingTop: insets.top,
-            paddingLeft: insets.left + 12,
-            paddingRight: insets.right + 12,
-          },
-        ]}
-      >
-        <Pressable
-          onPress={() => navigation.goBack()}
-          hitSlop={16}
-          accessibilityLabel="Back"
-          style={styles.backButton}
-        >
-          <Text style={styles.backText}>{'< Back'}</Text>
-        </Pressable>
-        <Text style={styles.headerTitle}>Decks</Text>
-        <View style={styles.backButton} />
-      </View>
+      <ScreenHeader title="Decks" onBack={() => navigation.goBack()} />
       <SafeAreaView style={styles.body} edges={['left', 'right', 'bottom']}>
         <ScrollView contentContainerStyle={styles.content} testID="decks-scroll-view">
       <Text style={styles.sectionHeader} testID="your-decks-header">Your Decks</Text>
@@ -111,28 +90,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingTop: 8,
     paddingBottom: 32,
-  },
-  headerBar: {
-    backgroundColor: ACCENT,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    minHeight: 44,
-  },
-  headerTitle: {
-    color: '#FFFFFF',
-    fontSize: 22,
-    fontWeight: '700',
-  },
-  backButton: {
-    paddingVertical: 2,
-    paddingHorizontal: 4,
-    minWidth: 70,
-  },
-  backText: {
-    color: '#FFFFFF',
-    fontSize: 17,
-    fontWeight: '600',
   },
   centered: {
     flex: 1,

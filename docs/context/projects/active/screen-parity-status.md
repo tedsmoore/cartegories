@@ -18,13 +18,13 @@ Tracking which screens match the original iOS app and what work remains.
 | RulesScreen | RulesViewController | How-to-play instructions |
 | TutorialScreen | TutorialViewController | Map background, navigation buttons |
 | DecksScreen | DeckCollectionViewController | Two-section blob grid (Your Decks + Get More Decks). Locked decks show "Coming soon" alert (real IAP deferred). Options moved to SettingsScreen. Back-nav fixed via explicit native-stack header config. |
+| SettingsScreen | SettingsViewController | Light-theme rewrite. Cyan ScreenHeader, five flat rows (Sound, Timer, Rate Us, Tutorial, Rules). Timer subtitle reads live from GameContext. |
 
 ## Partial
 
 | Mobile Screen | iOS ViewController | What's Missing |
 |---|---|---|
 | StoreScreen | BuyDeckViewController | IAP service hooked up but UI is minimal — missing individual deck purchase modals, pricing, purchase confirmations |
-| SettingsScreen | SettingsViewController | Sound toggle, Timer link, Rate Us all wired; full settings table redesign + timer-state sync to GameContext deferred |
 | TimerScreen | TimerTableViewController + SetTimerViewController | Presets work (60/75/99s); missing custom timer input UI |
 
 ## Not Porting
@@ -36,7 +36,6 @@ Tracking which screens match the original iOS app and what work remains.
 
 ## Known Issues
 
-- **SettingsScreen Timer subtitle is hardcoded** — the row reads "Currently 60 seconds" regardless of the user's actual saved timer value. Local `useState(60)` instead of `GameContext`. Bundled with the deferred full SettingsScreen rework.
 - **DecksScreen cell sizing in small viewports** — DeckCell uses `flex: 1` + `aspectRatio: 1` which produces oversized cells on small landscape simulators (i17 default profile). Only the first row of "Your Decks" is visible; "Get More Decks" is unreachable via scroll. Reproduces in Maestro tests on the small profile. Untested on real hardware — likely fine on full-size device. Maestro flow has back-nav, scroll, and locked-deck assertions deferred until cell sizing is fixed.
 - **Bundle ID** — currently `com.anonymous.cartegories-mobile`, needs renaming to `com.cartegories.app` or similar (separate task)
 - **Animation library** — using React Native `Animated` which is known to be flaky. Planned migration to `react-native-reanimated` after parity is complete.

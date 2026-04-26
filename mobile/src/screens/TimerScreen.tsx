@@ -10,7 +10,7 @@ const PRESETS = [60, 75, 99];
 
 const TimerScreen: React.FC<Props> = ({ navigation }) => {
   const { game, setTimerSeconds } = useGame();
-  const [selected, setSelected] = useState(game.timeRemaining || 60);
+  const [selected, setSelected] = useState(game.timerPreset);
 
   const save = () => {
     setTimerSeconds(selected);
