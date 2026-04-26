@@ -1,14 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Pressable, ActivityIndicator, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Alert, Pressable } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGame } from '../state/GameContext';
-import { getBlobImage } from '../constants/deckImages';
+import { partitionDecks } from '../utils/partitionDecks';
+import DeckCell from '../components/DeckCell';
+import { Deck } from '../types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Decks'>;
 
+const ACCENT = '#1EAFE2';
+const NUM_COLS = 5;
+
 const DecksScreen: React.FC<Props> = ({ navigation }) => {
   const { decks, game, setActiveDecks, loading } = useGame();
+  const insets = useSafeAreaInsets();
 
   if (loading) {
     return (
@@ -18,47 +25,75 @@ const DecksScreen: React.FC<Props> = ({ navigation }) => {
     );
   }
 
+  const { owned, locked } = partitionDecks(decks);
+
+  // General is the canonical "first" deck — pin it before everything else.
+  const ownedSorted = [...owned].sort((a, b) => {
+    if (a.name === 'General') return -1;
+    if (b.name === 'General') return 1;
+    return 0;
+  });
+
+  const toggleActive = (deck: Deck) => {
+    const isActive = game.activeDecks.includes(deck.id);
+    const next = isActive
+      ? game.activeDecks.filter((d) => d !== deck.id)
+      : [...game.activeDecks, deck.id];
+    setActiveDecks(next);
+  };
+
+  const showLockedAlert = (deck: Deck) => {
+    Alert.alert('Coming soon', `"${deck.name}" launches with the next update.`);
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Your Decks</Text>
-      <FlatList
-        data={decks}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          const active = game.activeDecks.includes(item.id);
-          return (
-            <Pressable
-              style={[styles.deckRow, active ? styles.deckRowActive : undefined]}
-              onPress={() => {
-                const next = active
-                  ? game.activeDecks.filter((d) => d !== item.id)
-                  : [...game.activeDecks, item.id];
-                setActiveDecks(next);
-              }}
-            >
-              <Image source={getBlobImage(item.name)} style={styles.deckImage} resizeMode="contain" />
-              <View style={styles.deckInfo}>
-                <Text style={styles.deckName}>
-                  {!item.isFree && '\uD83D\uDD12 '}{item.name}
-                </Text>
-                <Text style={styles.deckMeta}>{item.cards.length} cards</Text>
-              </View>
-              <Text style={[styles.pill, active ? styles.pillActive : styles.pillInactive]}>
-                {active ? 'Active' : 'Tap to activate'}
-              </Text>
-            </Pressable>
-          );
-        }}
-        ListFooterComponent={
-          <View style={styles.optionsSection}>
-            <Text style={styles.header}>Options</Text>
-            <Pressable style={styles.optionRow} onPress={() => navigation.navigate('Timer')}>
-              <Text style={styles.optionText}>Timer</Text>
-              <Text style={styles.optionValue}>{game.timeRemaining}s</Text>
-            </Pressable>
+      <View
+        style={[
+          styles.headerBar,
+          {
+            paddingTop: insets.top,
+            paddingLeft: insets.left + 12,
+            paddingRight: insets.right + 12,
+          },
+        ]}
+      >
+        <Pressable
+          onPress={() => navigation.goBack()}
+          hitSlop={16}
+          accessibilityLabel="Back"
+          style={styles.backButton}
+        >
+          <Text style={styles.backText}>{'< Back'}</Text>
+        </Pressable>
+        <Text style={styles.headerTitle}>Decks</Text>
+        <View style={styles.backButton} />
+      </View>
+      <SafeAreaView style={styles.body} edges={['left', 'right', 'bottom']}>
+        <ScrollView contentContainerStyle={styles.content} testID="decks-scroll-view">
+      <Text style={styles.sectionHeader} testID="your-decks-header">Your Decks</Text>
+      <View style={styles.grid}>
+        {ownedSorted.map((deck) => (
+          <View key={deck.id} style={styles.cellWrap}>
+            <DeckCell
+              deck={deck}
+              active={game.activeDecks.includes(deck.id)}
+              onPress={() => toggleActive(deck)}
+            />
           </View>
-        }
-      />
+        ))}
+      </View>
+
+      <Text style={styles.sectionHeader} testID="get-more-decks-header">Get More Decks</Text>
+      <View style={styles.grid}>
+        {locked.map((deck) => (
+          <View key={deck.id} style={styles.cellWrap}>
+            <DeckCell deck={deck} locked onPress={() => showLockedAlert(deck)} />
+          </View>
+        ))}
+      </View>
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 };
@@ -66,85 +101,60 @@ const DecksScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f172a',
-    padding: 16,
+    backgroundColor: ACCENT,
+  },
+  body: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  content: {
+    paddingHorizontal: 12,
+    paddingTop: 8,
+    paddingBottom: 32,
+  },
+  headerBar: {
+    backgroundColor: ACCENT,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    minHeight: 44,
+  },
+  headerTitle: {
+    color: '#FFFFFF',
+    fontSize: 22,
+    fontWeight: '700',
+  },
+  backButton: {
+    paddingVertical: 2,
+    paddingHorizontal: 4,
+    minWidth: 70,
+  },
+  backText: {
+    color: '#FFFFFF',
+    fontSize: 17,
+    fontWeight: '600',
   },
   centered: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
   },
-  header: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#e2e8f0',
-    marginBottom: 12,
-  },
-  deckRow: {
-    backgroundColor: '#1e293b',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 10,
+  grid: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexWrap: 'wrap',
   },
-  deckRowActive: {
-    borderWidth: 1,
-    borderColor: '#1eafe2',
+  cellWrap: {
+    width: `${100 / NUM_COLS}%`,
+    padding: 6,
   },
-  deckImage: {
-    width: 48,
-    height: 48,
-    marginRight: 12,
-  },
-  deckInfo: {
-    flex: 1,
-  },
-  deckName: {
-    fontSize: 16,
-    color: '#e2e8f0',
+  sectionHeader: {
+    fontSize: 22,
     fontWeight: '700',
-  },
-  deckMeta: {
-    color: '#cbd5e1',
-    marginTop: 4,
-  },
-  pill: {
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    fontWeight: '700',
-  },
-  pillActive: {
-    backgroundColor: '#0f172a',
-    color: '#1eafe2',
-  },
-  pillInactive: {
-    backgroundColor: '#334155',
-    color: '#e2e8f0',
-  },
-  optionsSection: {
-    marginTop: 20,
-  },
-  optionRow: {
-    backgroundColor: '#1e293b',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  optionText: {
-    fontSize: 16,
-    color: '#e2e8f0',
-    fontWeight: '700',
-  },
-  optionValue: {
-    color: '#1eafe2',
-    fontWeight: '700',
-    fontSize: 16,
+    color: ACCENT,
+    marginTop: 12,
+    marginBottom: 6,
+    paddingHorizontal: 6,
   },
 });
 
