@@ -22,6 +22,7 @@ type GameContextValue = {
 
 const defaultGameState: GameState = {
   score: 0,
+  timerPreset: 60,
   timeRemaining: 60,
   activeDecks: [],
   currentCard: null,
@@ -88,7 +89,7 @@ export const GameProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
       ...current,
       score: 0,
       currentCard: null,
-      timeRemaining: current.timeRemaining > 0 ? current.timeRemaining : 60,
+      timeRemaining: current.timerPreset,
       drawnCards: [],
       nailedItems: [],
       missedItems: [],
@@ -102,7 +103,7 @@ export const GameProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   };
 
   const setTimerSeconds = (seconds: number) => {
-    setGame((current) => ({ ...current, timeRemaining: seconds }));
+    setGame((current) => ({ ...current, timerPreset: seconds, timeRemaining: seconds }));
   };
 
   const setCurrentCard = (card: Card | null) => {

@@ -17,6 +17,7 @@ export type Deck = {
 
 export type GameState = {
   score: number;
+  timerPreset: number;
   timeRemaining: number;
   activeDecks: string[];
   currentCard: Card | null;
