@@ -36,7 +36,6 @@ Tracking which screens match the original iOS app and what work remains.
 
 ## Known Issues
 
-- **DecksScreen cell sizing in small viewports** — DeckCell uses `flex: 1` + `aspectRatio: 1` which produces oversized cells on small landscape simulators (i17 default profile). Only the first row of "Your Decks" is visible; "Get More Decks" is unreachable via scroll. Reproduces in Maestro tests on the small profile. Untested on real hardware — likely fine on full-size device. Maestro flow has back-nav, scroll, and locked-deck assertions deferred until cell sizing is fixed.
 - **Bundle ID** — currently `com.anonymous.cartegories-mobile`, needs renaming to `com.cartegories.app` or similar (separate task)
 - **Animation library** — using React Native `Animated` which is known to be flaky. Planned migration to `react-native-reanimated` after parity is complete.
 - **Expo dev menu shake conflict** — shake gesture for "go back" feature conflicts with Expo's dev menu shake. Users need to disable "Shake to show Developer Menu" in Expo Go settings. Not an issue in production builds.

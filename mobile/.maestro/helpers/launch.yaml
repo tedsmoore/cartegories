@@ -2,4 +2,5 @@ appId: com.anonymous.cartegories-mobile
 ---
 - launchApp:
     appId: com.anonymous.cartegories-mobile
+- setOrientation: LANDSCAPE_LEFT
 - waitForAnimationToEnd

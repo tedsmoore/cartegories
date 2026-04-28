@@ -25,6 +25,8 @@ appId: com.anonymous.cartegories-mobile
 
 # NOTE: The flow currently asserts only the "Your Decks" header and active-
 # toggle behavior. Back-nav assertion, "Get More Decks" scroll, and the
-# locked-deck Coming-soon assertion are deferred — they all fail on the
-# undersized i17 simulator viewport (cells overflow; back chevron is
-# obscured). Restore these once a normal-sized simulator profile is in use.
+# locked-deck Coming-soon assertion are deferred — investigation in the
+# 04-27 session traced the failures to a Maestro/XCUITest issue: in
+# landscape, label-based taps after the first nav no-op silently. The
+# original PR 14 hypothesis (cells overflow on i17 viewport) was wrong —
+# rendering is correct. Restore these once the multi-tap path is fixed.
