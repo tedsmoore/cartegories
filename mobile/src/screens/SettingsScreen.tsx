@@ -123,6 +123,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#E2E8F0',
+    width: '70%',
+    maxWidth: 560,
+    alignSelf: 'center',
   },
   rowText: {
     flex: 1,
