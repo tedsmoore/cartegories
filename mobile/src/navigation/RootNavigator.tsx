@@ -58,7 +58,7 @@ const RootNavigator = () => {
         <Stack.Screen name="Play" component={PlayScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Store" component={StoreScreen} options={{ title: 'Store' }} />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Timer" component={TimerScreen} options={{ title: 'Timer' }} />
+        <Stack.Screen name="Timer" component={TimerScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Tutorial" component={TutorialScreen} options={{ title: 'Tutorial' }} />
         <Stack.Screen name="Rules" component={RulesScreen} options={{ title: 'Rules' }} />
         <Stack.Screen name="GameOver" component={GameOverScreen} options={{ headerShown: false }} />

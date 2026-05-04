@@ -19,13 +19,13 @@ Tracking which screens match the original iOS app and what work remains.
 | TutorialScreen | TutorialViewController | Map background, navigation buttons |
 | DecksScreen | DeckCollectionViewController | Two-section blob grid (Your Decks + Get More Decks). Locked decks show "Coming soon" alert (real IAP deferred). Options moved to SettingsScreen. Back-nav fixed via explicit native-stack header config. |
 | SettingsScreen | SettingsViewController | Light-theme rewrite. Cyan ScreenHeader, five flat rows (Sound, Timer, Rate Us, Tutorial, Rules). Timer subtitle reads live from GameContext. |
+| TimerScreen | TimerTableViewController | Three checkmark rows (60/75/99 Seconds), tap-to-select with immediate persist. Matches SettingsScreen visual language (cyan ScreenHeader, white body, centered narrow rows). iOS `SetTimerViewController` was a leftover decorative scene with no input UI; not ported. |
 
 ## Partial
 
 | Mobile Screen | iOS ViewController | What's Missing |
 |---|---|---|
 | StoreScreen | BuyDeckViewController | IAP service hooked up but UI is minimal — missing individual deck purchase modals, pricing, purchase confirmations |
-| TimerScreen | TimerTableViewController + SetTimerViewController | Presets work (60/75/99s); missing custom timer input UI |
 
 ## Not Porting
 

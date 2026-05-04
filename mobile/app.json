@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "cartegories_mobile",
-    "slug": "cartegories_mobile",
+    "name": "Cartegories",
+    "slug": "cartegories",
     "version": "1.0.0",
     "scheme": "cartegories",
     "orientation": "landscape",
