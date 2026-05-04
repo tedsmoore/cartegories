@@ -1,43 +1,50 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGame } from '../state/GameContext';
+import ScreenHeader from '../components/ScreenHeader';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Timer'>;
 
-const PRESETS = [60, 75, 99];
+const ACCENT = '#1EAFE2';
+
+const PRESETS: { seconds: number; label: string }[] = [
+  { seconds: 60, label: '60 Seconds' },
+  { seconds: 75, label: '75 Seconds' },
+  { seconds: 99, label: '99 Seconds' },
+];
 
 const TimerScreen: React.FC<Props> = ({ navigation }) => {
   const { game, setTimerSeconds } = useGame();
-  const [selected, setSelected] = useState(game.timerPreset);
-
-  const save = () => {
-    setTimerSeconds(selected);
-    navigation.goBack();
-  };
+  const selected = game.timerPreset;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Round Timer</Text>
-      <Text style={styles.subtitle}>Matches the TimerTableViewController flow from iOS.</Text>
-      <View style={styles.pillRow}>
-        {PRESETS.map((value) => {
-          const active = selected === value;
-          return (
-            <Pressable
-              key={value}
-              style={[styles.pill, active ? styles.pillActive : undefined]}
-              onPress={() => setSelected(value)}
-            >
-              <Text style={[styles.pillText, active ? styles.pillTextActive : undefined]}>{value}s</Text>
-            </Pressable>
-          );
-        })}
-      </View>
-      <Pressable style={styles.primary} onPress={save}>
-        <Text style={styles.primaryText}>Save</Text>
-      </Pressable>
+      <ScreenHeader title="Timer" onBack={() => navigation.goBack()} />
+      <SafeAreaView style={styles.body} edges={['left', 'right', 'bottom']}>
+        <ScrollView contentContainerStyle={styles.content}>
+          {PRESETS.map(({ seconds, label }) => {
+            const active = selected === seconds;
+            return (
+              <Pressable
+                key={seconds}
+                style={styles.row}
+                onPress={() => setTimerSeconds(seconds)}
+                accessibilityLabel={label}
+                accessibilityRole="button"
+                accessibilityState={{ selected: active }}
+              >
+                <View style={styles.rowText}>
+                  <Text style={styles.rowTitle}>{label}</Text>
+                </View>
+                {active ? <Text style={styles.checkmark}>{'✓'}</Text> : null}
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 };
@@ -45,53 +52,44 @@ const TimerScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f172a',
-    padding: 16,
+    backgroundColor: ACCENT,
   },
-  header: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#e2e8f0',
-    marginBottom: 8,
+  body: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
   },
-  subtitle: {
-    color: '#cbd5e1',
-    marginBottom: 16,
-  },
-  pillRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  pill: {
-    backgroundColor: '#1e293b',
+  content: {
     paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 999,
+    paddingTop: 12,
+    paddingBottom: 32,
   },
-  pillActive: {
-    backgroundColor: '#38bdf8',
-  },
-  pillText: {
-    color: '#e2e8f0',
-    fontWeight: '700',
-  },
-  pillTextActive: {
-    color: '#0f172a',
-  },
-  primary: {
-    marginTop: 24,
-    backgroundColor: '#f59e0b',
-    paddingVertical: 14,
-    borderRadius: 12,
+  row: {
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#E2E8F0',
+    width: '70%',
+    maxWidth: 560,
+    alignSelf: 'center',
   },
-  primaryText: {
-    fontWeight: '800',
+  rowText: {
+    flex: 1,
+    marginRight: 12,
+  },
+  rowTitle: {
+    fontSize: 17,
     color: '#0f172a',
-    fontSize: 16,
+    fontWeight: '600',
+  },
+  checkmark: {
+    fontSize: 22,
+    color: ACCENT,
+    fontWeight: '600',
   },
 });
 
 export default TimerScreen;
-
