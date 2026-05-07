@@ -31,3 +31,11 @@ Run the development mobile app:
 cd mobile
 pnpm start
 ```
+
+### Claude Code (optional)
+
+If you use Claude Code, the Expo plugin is worth installing. It bundles skills for the dev client, EAS deployment, SDK upgrades, and CI/CD workflows.
+
+```
+/plugin install expo@claude-plugins-official
+```
