@@ -9,7 +9,7 @@
       "Bash(docker *)",
       "Bash(expo *)",
       "Bash(sqlite3 *)",
-      "Bash(xcrun simctl *)",
+      "Bash(xcrun *)",
       "Bash(maestro *)",
       "Bash(sips *)",
       "Bash(ngrok *)",
@@ -25,5 +25,8 @@
       "mcp__jetbrains__search_in_files_by_text",
       "mcp__jetbrains__search_in_files_by_regex"
     ]
+  },
+  "enabledPlugins": {
+    "expo@claude-plugins-official": true
   }
 }
