@@ -126,6 +126,8 @@ const Button: React.FC<Props> = ({ title, baseColor, onPress, width = 200, style
   return (
     <Pressable
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={title}
       style={({ pressed }) => [
         styles.wrapper,
         { width },

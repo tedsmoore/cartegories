@@ -25,7 +25,9 @@ const ScreenHeader: React.FC<Props> = ({ title, onBack }) => {
       <Pressable
         onPress={onBack}
         hitSlop={16}
+        accessibilityRole="button"
         accessibilityLabel="Back"
+        testID="screen-header-back"
         style={styles.side}
       >
         <Text style={styles.backText}>{'< Back'}</Text>

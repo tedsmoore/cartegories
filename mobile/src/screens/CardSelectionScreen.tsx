@@ -114,13 +114,13 @@ const CardSelectionScreen: React.FC<Props> = ({ navigation }) => {
       <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
         {/* Nav icons */}
         <View style={styles.navRow}>
-          <Pressable onPress={() => navigation.goBack()} hitSlop={12} accessibilityLabel="Home">
+          <Pressable onPress={() => navigation.goBack()} hitSlop={12} accessibilityRole="button" accessibilityLabel="Home">
             <Image
               source={require('../../assets/images/white-home-icon.png')}
               style={styles.navIcon}
             />
           </Pressable>
-          <Pressable onPress={() => navigation.navigate('Decks')} hitSlop={12} accessibilityLabel="Decks">
+          <Pressable onPress={() => navigation.navigate('Decks')} hitSlop={12} accessibilityRole="button" accessibilityLabel="Decks" testID="decks-gear">
             <Image
               source={require('../../assets/images/white-gear.png')}
               style={styles.navIcon}
