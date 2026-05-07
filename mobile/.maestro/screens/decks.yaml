@@ -2,11 +2,11 @@ appId: com.anonymous.cartegories-mobile
 ---
 - runFlow: ../helpers/launch.yaml
 
-# Navigate to CardSelection (back-nav target), then deep-link to Decks.
-# Deep link is used because Expo dev overlays can obscure the gear icon in test runs.
-- openLink: "cartegories://card-selection"
+# Home → CardSelection → DecksScreen via real navigation (not deeplinks).
+- tapOn: "Quick Play"
 - waitForAnimationToEnd
-- openLink: "cartegories://decks"
+- tapOn:
+    id: "decks-gear"
 - waitForAnimationToEnd
 
 - assertVisible:
@@ -15,18 +15,37 @@ appId: com.anonymous.cartegories-mobile
 
 # Toggle a free deck active (General — visible in first row)
 - tapOn:
-    label: "General"
+    id: "deck-cell-general"
 - takeScreenshot: decks-general-active
 
 # Toggle it off
 - tapOn:
-    label: "General"
+    id: "deck-cell-general"
 - takeScreenshot: decks-general-inactive
 
-# NOTE: The flow currently asserts only the "Your Decks" header and active-
-# toggle behavior. Back-nav assertion, "Get More Decks" scroll, and the
-# locked-deck Coming-soon assertion are deferred — investigation in the
-# 04-27 session traced the failures to a Maestro/XCUITest issue: in
-# landscape, label-based taps after the first nav no-op silently. The
-# original PR 14 hypothesis (cells overflow on i17 viewport) was wrong —
-# rendering is correct. Restore these once the multi-tap path is fixed.
+# Scroll to "Get More Decks" section header
+- scrollUntilVisible:
+    element:
+      id: "get-more-decks-header"
+    direction: DOWN
+- takeScreenshot: decks-get-more-visible
+
+# Scroll until the Harry Potter locked deck is visible, then tap it
+- scrollUntilVisible:
+    element:
+      id: "deck-cell-harry-potter"
+    direction: DOWN
+- tapOn:
+    id: "deck-cell-harry-potter"
+- assertVisible: "Coming soon"
+- takeScreenshot: decks-coming-soon-alert
+
+# Dismiss the alert
+- tapOn: "OK"
+- waitForAnimationToEnd
+
+# Back to CardSelection
+- tapOn:
+    id: "screen-header-back"
+- waitForAnimationToEnd
+- assertVisible: "New Card"

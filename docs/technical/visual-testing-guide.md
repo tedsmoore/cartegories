@@ -96,3 +96,18 @@ Claude can:
 2. Run them and inspect screenshot output
 3. Iterate on layout without human-in-the-loop for every change
 4. Use flows as regression tests going forward
+
+### Selector conventions
+
+Use `tapOn: { id: "<testID>" }` for every tap after the first. Label/text selectors (`tapOn: "Quick Play"`) work for the opening interaction in a flow, but silently no-op on follow-on taps in landscape. Maestro reports `COMPLETED` and the app gets nothing. The first tap from a fresh launch is the only label tap you can trust; everything after needs a testID.
+
+For each Pressable or Touchable that Maestro needs to tap or assert, give it a `testID`. Conventions in this repo:
+
+- Nav controls: `decks-gear`, `screen-header-back`
+- List items: derive from a stable id, e.g. `deck-cell-${deck.id}` (slug-based)
+- Section headers: `your-decks-header`, `get-more-decks-header`
+- Scroll containers: `<screen>-scroll-view`
+
+iOS native alerts are an exception: `tapOn: "OK"` on an `Alert.alert` button works no matter when it fires, because the alert sits outside the React Native a11y tree.
+
+Add testIDs as you write the JSX, not after. Retrofitting means another build. While you're there, pair them with `accessibilityLabel` and `accessibilityRole="button"` so VoiceOver users get the same affordances Maestro does.

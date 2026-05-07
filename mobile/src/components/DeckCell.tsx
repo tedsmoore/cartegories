@@ -17,8 +17,10 @@ const DeckCell: React.FC<Props> = ({ deck, active, locked, onPress }) => {
     <Pressable
       style={[styles.cell, active && styles.cellActive]}
       onPress={onPress}
+      accessibilityRole="button"
       accessibilityLabel={deck.name}
       accessibilityState={{ selected: !!active, disabled: !!locked }}
+      testID={`deck-cell-${deck.id}`}
     >
       <Image source={getBlobImage(deck.name)} style={styles.image} resizeMode="contain" />
       <Text style={styles.label} numberOfLines={2}>
