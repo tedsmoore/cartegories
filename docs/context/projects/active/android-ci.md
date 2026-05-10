@@ -35,18 +35,34 @@ Findings:
 - `expo-av` deprecation warning on launch — already deprecated for SDK 54, migrate to `expo-audio`/`expo-video` eventually.
 - Cloud-auto-scroll animation works on Android (pre-existing app behavior, not regression).
 
-### Phase 2 — Fix what breaks on Android
+### Phase 2 — Fix what breaks on Android — DONE 2026-05-10
 
-Surfaces likely to need attention:
+Played the full loop on the Pixel 7 emulator: Home → CardSelection → draw card → CardSelection (with PLAY now active) → Game → toggle items → GameOver. Nothing broke, no code changes.
 
+What I checked and it worked:
+- NanumBrush + Witless fonts render. `expo-font` is fine on Android.
+- Sound effects play. logcat: `AudioTrack: stop(18): called with 91008 frames delivered` — `expo-av` is wired.
+- SQLite migrations ran, 15 decks seeded.
+- Landscape lock honored.
+- Switch taps bump the score and the row text turns green.
+- Timer counts down and fires GameOver at :00.
+- System back button (KEYCODE_BACK) walks the React Navigation stack as expected; no BackHandler code needed.
+- `react-native-screens`, `react-navigation/native-stack`, blob/mountain image assets all fine.
+
+The scoping doc anticipated breakage in `Alert.alert`, `expo-sensors` (shake), `react-native-purchases`, and `expo-store-review`. None of those are imported in `src/` yet, so there's nothing to test on Android until those features actually exist. Revisit when the iOS recreation gets to them.
+
+Warnings to track but not block on:
+- `expo-av` deprecation (SDK 54 wants `expo-audio` / `expo-video`)
+- `userInterfaceStyle: light` at prebuild asks for `expo-system-ui`; cosmetic
+- A pile of Kotlin deprecation warnings inside `expo-modules-core` and `expo`; upstream, not ours
+
+Original Phase 2 surfaces (kept as a record of what was anticipated):
 - `expo-font` (NanumBrush) — verify loads on Android
 - `expo-av` (sound) — Android audio permissions in some configs
 - `expo-sensors` (shake gesture) — accelerometer permission in manifest
 - `react-native-purchases` (RevenueCat) — Play Store config; defer if monetization isn't shipping
 - `expo-store-review` — works but launches Play Store flow
 - System UI: `Alert.alert` renders as Material dialog, system back button, predictive back gesture (Android 14+)
-
-Approach: get the app launching and playable first. File Play Store integration and IAP separately. Do not block CI on monetization.
 
 ### Phase 3 — Maestro on Android
 
@@ -91,4 +107,4 @@ Periodic iOS check (separate workflow):
 
 ## Next session
 
-Phase 1 only. Do not try to do all four in one session. Phase 4 is gated on 1-3 working locally.
+Phases 1 and 2 are done. Next is Phase 3 (Maestro on Android — decide bundle-id strategy, port `decks.yaml`). Phase 4 (Linux CI) follows.
