@@ -12,15 +12,28 @@ Android CI on Linux is ~10× cheaper than iOS CI on macOS, and catches logic, la
 
 ## Phases (sequenced; do not parallelize)
 
-### Phase 1 — Android building locally
+### Phase 1 — Android building locally — DONE 2026-05-10
 
-- Install Android Studio + SDK + an emulator image (Pixel 7, current API)
-- Set `ANDROID_HOME`, add `platform-tools` to PATH
-- `pnpm exec expo prebuild` regenerates `mobile/android/` from `app.json`
-- `pnpm exec expo run:android` builds + installs on the emulator
-- Smoke test: launch, draw a card, play, see categories
+Working setup on Ted's Mac (Apple Silicon, Java 17 already installed):
 
-Likely friction: Java/Gradle version mismatch with current Expo SDK, missing `ANDROID_HOME`, prebuild overwriting native edits (same chicken-and-egg as iOS — see `docs/context/technical/ios-device-setup.md` for the pattern).
+```
+# already had: android-commandlinetools cask, ANDROID_HOME set, adb/sdkmanager on PATH
+yes | sdkmanager --licenses
+sdkmanager "emulator" "platforms;android-35" "system-images;android-35;google_apis;arm64-v8a"
+echo "no" | avdmanager create avd -n Pixel_7_API_35 -k "system-images;android-35;google_apis;arm64-v8a" -d "pixel_7"
+"$ANDROID_HOME/emulator/emulator" -avd Pixel_7_API_35 &
+cd mobile && pnpm exec expo prebuild --platform android --no-install
+pnpm exec expo run:android   # no --device flag; it auto-picks the running emulator
+```
+
+First-time build: ~5m on Apple Silicon (gradle 8.14.3 + NDK + dep download). Subsequent builds will be much faster (gradle daemon, cached deps).
+
+Findings:
+- No code changes needed — app launched first try, decks seeded, HomeScreen rendered.
+- `expo run:android --device <adb-id>` does not work; expects AVD name. Easier to just omit and let it auto-select.
+- `userInterfaceStyle: light` triggers a "install expo-system-ui" warning at prebuild; benign for Phase 1, file if dark mode comes up later.
+- `expo-av` deprecation warning on launch — already deprecated for SDK 54, migrate to `expo-audio`/`expo-video` eventually.
+- Cloud-auto-scroll animation works on Android (pre-existing app behavior, not regression).
 
 ### Phase 2 — Fix what breaks on Android
 
