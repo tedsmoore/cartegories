@@ -66,12 +66,7 @@ Original Phase 2 surfaces (kept as a record of what was anticipated):
 
 ### Phase 3 — Maestro on Android
 
-Bundle-id wrinkle: iOS is `com.anonymous.cartegories-mobile`, Android is `com.anonymous.cartegoriesmobile` (no dash; per `app.json`). Two options:
-
-1. Parameterize `appId` via `MAESTRO_APP_ID` env var
-2. Two thin entry-point YAMLs (`decks-ios.yaml`, `decks-android.yaml`) that `runFlow:` into a shared body
-
-Pick when we get there. Convert `decks.yaml` first (already green on iOS); expand to other screens later.
+Bundle-id is unified at `com.digifuzz.cartegories` for both platforms as of 2026-05-10 (renamed early — see digifuzz-apple-distribution doc). One `appId:` value per yaml works on both. Convert `decks.yaml` first (already green on iOS); expand to other screens later.
 
 Specific flows likely to need platform-specific handling:
 

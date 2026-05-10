@@ -1,4 +1,4 @@
-appId: com.anonymous.cartegories-mobile
+appId: com.digifuzz.cartegories
 ---
 - runFlow: ../helpers/launch.yaml
 - openLink: "cartegories://timer"

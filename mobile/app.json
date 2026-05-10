@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.cartegories-mobile"
+      "bundleIdentifier": "com.digifuzz.cartegories"
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +24,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.cartegoriesmobile"
+      "package": "com.digifuzz.cartegories"
     },
     "web": {
       "favicon": "./assets/images/icons/favicon.png"

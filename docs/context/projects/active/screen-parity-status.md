@@ -36,6 +36,6 @@ Tracking which screens match the original iOS app and what work remains.
 
 ## Known Issues
 
-- **Bundle ID** — currently `com.anonymous.cartegories-mobile`, needs renaming to `com.cartegories.app` or similar (separate task)
+- ~~**Bundle ID** — currently `com.anonymous.cartegories-mobile`, needs renaming to `com.cartegories.app` or similar (separate task)~~ Renamed 2026-05-10 to `com.digifuzz.cartegories` on both platforms.
 - **Animation library** — using React Native `Animated` which is known to be flaky. Planned migration to `react-native-reanimated` after parity is complete.
 - **Expo dev menu shake conflict** — shake gesture for "go back" feature conflicts with Expo's dev menu shake. Users need to disable "Shake to show Developer Menu" in Expo Go settings. Not an issue in production builds.
