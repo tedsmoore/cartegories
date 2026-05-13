@@ -173,6 +173,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               width={200}
               breathing
               style={styles.shadow}
+              testID="home-quick-play"
             />
           </View>
 
