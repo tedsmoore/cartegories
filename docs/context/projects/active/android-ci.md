@@ -64,9 +64,23 @@ Original Phase 2 surfaces (kept as a record of what was anticipated):
 - `expo-store-review` — works but launches Play Store flow
 - System UI: `Alert.alert` renders as Material dialog, system back button, predictive back gesture (Android 14+)
 
-### Phase 3 — Maestro on Android
+### Phase 3 — Maestro on Android — IN PROGRESS
 
-Bundle-id is unified at `com.digifuzz.cartegories` for both platforms as of 2026-05-10 (renamed early — see digifuzz-apple-distribution doc). One `appId:` value per yaml works on both. Convert `decks.yaml` first (already green on iOS); expand to other screens later.
+Bundle-id is unified at `com.digifuzz.cartegories` for both platforms as of 2026-05-10 (renamed early — see digifuzz-apple-distribution doc). One `appId:` value per yaml works on both.
+
+What's done:
+- Bundle ID rename (PR not yet open; commits `672e3b7`, `e4c63c7`, `f5a050a` on `tm-05-10-android-phase-1`)
+- Button component forwards `testID` (commit `86869f9`); Quick Play wired as `home-quick-play`; `decks.yaml` uses id-based selector for that tap
+- Confirmed the text-based `tapOn: "Quick Play"` reliably registers on Android Maestro as COMPLETED while the underlying Pressable doesn't fire — same multi-tap-no-op pattern as the May 6 gear-tap fix. Resolution is testID + id selector throughout.
+
+What's not done:
+- decks.yaml is not yet fully green on Android. Last run failed with `AndroidInstrumentationSetupFailure` from a memory-pressured emulator. Need a fresh emulator (or Linux CI) to confirm whether the rest of the flow (decks-gear, your-decks-header, deck-cell-general, etc. — all already id-based) passes.
+- The other 11 maestro flows still use `tapOn: "Some Text"` selectors in several places. They'll likely need the same Button-testID treatment for buttons used in those flows. Audit needed.
+
+Useful debug commands when picking this back up:
+- `adb shell pm list packages | grep -iE "maestro|mobile\.test"` — should show `dev.mobile.maestro` and `dev.mobile.maestro.test`
+- `adb exec-out uiautomator dump /dev/tty` — confirms the testIDs land in the Android accessibility tree
+- Emulator memory: launch with `-memory 4096` if it's hitting "Software GL rendering will be used due to system memory pressure"
 
 Specific flows likely to need platform-specific handling:
 
