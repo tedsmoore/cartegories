@@ -1,9 +1,10 @@
-appId: com.anonymous.cartegories-mobile
+appId: com.digifuzz.cartegories
 ---
 - runFlow: ../helpers/launch.yaml
 
 # Home → CardSelection → DecksScreen via real navigation (not deeplinks).
-- tapOn: "Quick Play"
+- tapOn:
+    id: "home-quick-play"
 - waitForAnimationToEnd
 - tapOn:
     id: "decks-gear"

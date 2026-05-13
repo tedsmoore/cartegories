@@ -13,7 +13,7 @@ Cartegories is a Ted side project, not a David Energy / A+E one. Digifuzz is the
 ## Current state
 
 - Code signs against Ted's Personal Team (free, 7-day cert) tied to his personal Apple ID
-- Bundle ID is `com.anonymous.cartegories-mobile` (placeholder from Expo scaffold) — works but not namespaced under Digifuzz
+- Bundle ID is `com.digifuzz.cartegories` (renamed 2026-05-10, see step 2 below). Not yet registered with Apple — that happens during re-enrollment.
 - Dev build installs on Ted's iPhone via cable; no TestFlight, no internal-testing distribution
 - Free cert expires every 7 days → builds need a re-sign weekly via `pnpm exec expo run:ios --device`
 
@@ -30,17 +30,14 @@ Apple Developer enrollment takes a couple of days for an LLC because Apple verif
 
 Prereq: Digifuzz D-U-N-S number on hand (free from Dun & Bradstreet, ~1–2 day turnaround if expired).
 
-### 2. Rename bundle ID — bundle with re-enrollment
+### 2. Rename bundle ID — DONE 2026-05-10 (pulled forward for Android/Maestro)
 
-Change `com.anonymous.cartegories-mobile` → `com.digifuzz.cartegories` (or `com.digifuzz.cartegories.app` if `.cartegories` is taken).
+Both platforms are now `com.digifuzz.cartegories`. Done early so Maestro flows have one shared `appId:`. The Apple Developer side (registering the bundle ID against the Digifuzz team) still has to happen during re-enrollment — pre-registering it locally has no effect until there's an active developer account to attach it to.
 
-Reason to pair with re-enrollment: the bundle ID gets registered against the Digifuzz team during re-enrollment. Doing both at once = one rebuild, one re-install, one PR.
-
-Touches:
-- `mobile/app.json` → `ios.bundleIdentifier` and `android.package`
-- `pnpm exec expo prebuild --clean` regenerates native folders with new identifiers
-- Ted's installed dev build re-signs with the new ID (effectively a fresh install on his phone)
-- `mobile/.maestro/screens/*.yaml` reference `appId: com.anonymous.cartegories-mobile` — update all 9 flows
+Status of related touches:
+- `mobile/app.json` — updated
+- `mobile/.maestro/**/*.yaml` — updated (12 files)
+- Ted's iPhone dev build — next time `expo run:ios --device` runs, Xcode will see a new bundle ID and install the app fresh; the old `com.anonymous.cartegories-mobile` install becomes orphaned and can be uninstalled by hand
 
 ### 3. Set up TestFlight — after re-enrollment
 

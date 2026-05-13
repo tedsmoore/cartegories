@@ -1,6 +1,6 @@
-appId: com.anonymous.cartegories-mobile
+appId: com.digifuzz.cartegories
 ---
 - launchApp:
-    appId: com.anonymous.cartegories-mobile
+    appId: com.digifuzz.cartegories
 - setOrientation: LANDSCAPE_LEFT
 - waitForAnimationToEnd

@@ -9,6 +9,7 @@ type Props = {
   width?: number;
   style?: StyleProp<ViewStyle>;
   breathing?: boolean;
+  testID?: string;
 };
 
 type RGB = { r: number; g: number; b: number };
@@ -82,7 +83,7 @@ const shiftLightness = (hex: string, delta: number) => {
   return rgbToHex(hslToRgb(next));
 };
 
-const Button: React.FC<Props> = ({ title, baseColor, onPress, width = 200, style, breathing = false }) => {
+const Button: React.FC<Props> = ({ title, baseColor, onPress, width = 200, style, breathing = false, testID }) => {
   const borderStart = shiftLightness(baseColor, 0.18);
   const borderEnd = shiftLightness(baseColor, -0.08);
   const faceTop = shiftLightness(baseColor, 0.12);
@@ -128,6 +129,7 @@ const Button: React.FC<Props> = ({ title, baseColor, onPress, width = 200, style
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={title}
+      testID={testID}
       style={({ pressed }) => [
         styles.wrapper,
         { width },

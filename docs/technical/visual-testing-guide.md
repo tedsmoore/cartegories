@@ -65,7 +65,7 @@ brew install maestro
 ### Example Flow
 Create `mobile/.maestro/card-selection.yaml`:
 ```yaml
-appId: com.anonymous.cartegories-mobile
+appId: com.digifuzz.cartegories
 ---
 - launchApp
 - tapOn: "Quick Play"
